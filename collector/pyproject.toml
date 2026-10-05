@@ -1,0 +1,33 @@
+[project]
+name = "vid2idea-collector"
+version = "0.1.0"
+description = "Turn Discord video and article links into illustrated, researched Notion briefs"
+readme = "README.md"
+license = { text = "MIT" }
+classifiers = ["Development Status :: 3 - Alpha", "Programming Language :: Python :: 3.12", "Operating System :: POSIX :: Linux"]
+requires-python = ">=3.12,<3.13"
+dependencies = ["pydantic>=2.11,<3", "discord.py>=2.5,<3", "supabase>=2,<3", "openai>=1,<3", "httpx>=0.28,<1", "python-dotenv>=1,<2", "filelock>=3,<4"]
+
+[project.optional-dependencies]
+# faster-whisper 1.2.1 passes metadata_errors, removed by PyAV 19.
+media = ["yt-dlp[default]", "faster-whisper>=1.1,<2", "av>=11,<19", "rapidocr>=3.9.1,<4", "pillow>=11,<13", "scrapling[fetchers] @ git+https://github.com/D4Vinci/Scrapling@971d5edb9c01f000dd4befcd21742e9b22260dc7"]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "pytest-asyncio>=0.25,<2"]
+
+[project.scripts]
+vid2idea = "vid2idea.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/vid2idea"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["live: requires a configured, dedicated Supabase project"]
