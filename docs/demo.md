@@ -1,8 +1,8 @@
 # A saved link, revisited
 
-[![Static overview of a Discord link, local evidence extraction and a resource-first Notion brief.](assets/vid2idea-poster.jpg)](assets/vid2idea-demo.mp4)
+https://github.com/user-attachments/assets/7b3c13ea-6ca6-4fd3-ac91-13a37dffa3ea
 
-**[Open the 22-second demo](assets/vid2idea-demo.mp4)** · [Animated preview](assets/vid2idea-preview.gif) · [Text sample](../examples/brief.md) · [Installation](../README.md#get-started)
+[Download the MP4](assets/vid2idea-demo.mp4) · [Static preview](assets/vid2idea-poster.jpg) · [Text sample](../examples/brief.md) · [Installation](../README.md#get-started)
 
 This silent walkthrough uses **fictional FrameForge content and simulated Discord and Notion views**. It shows the intended flow, with processing time condensed. It is not a recording of a live ingestion run or a speed benchmark. All source illustrations are original example artwork; the addresses use reserved `example.com` URLs.
 
