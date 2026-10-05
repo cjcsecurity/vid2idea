@@ -1,0 +1,1 @@
+vid2idea turns links saved in Discord into illustrated briefs in your Notion Library, with resource links, opened-source research, and useful next steps. This silent demo uses a clearly fictional example.

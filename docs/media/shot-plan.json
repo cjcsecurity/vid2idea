@@ -1,0 +1,23 @@
+{
+  "category": "kinetic-type",
+  "duration_s": 9,
+  "fps": 8,
+  "canvas": { "w": 960, "h": 540, "aspect": "16:9" },
+  "style": "Thoughtful editorial split frame: deep ink Discord/local process; warm paper native Notion blocks. A retained link chip travels from input to resource-first illustrated result. Silence, crisp type, clear fictional simulation labels.",
+  "palette": ["#17252b", "#f4f0e7", "#b74331", "#d4e897", "#56655f", "#d8d7cb"],
+  "font": "Manrope",
+  "export": "gif",
+  "asset_needs": [],
+  "content": {
+    "scenes": [
+      { "id": "save", "start": 0, "end": 2.2, "text": "Discord link → useful Notion brief", "emphasis_words": ["Notion brief"], "emotion": "curious", "motion": "Persistent split frame; Discord example message settles; link moves into durable queue", "beats": [] },
+      { "id": "understand", "start": 2.2, "end": 4.4, "text": "Audio · OCR · frames / Opened-source research", "emphasis_words": ["OCR"], "emotion": "clear", "motion": "Sequential process rows with persistent retained link", "beats": [] },
+      { "id": "revisit", "start": 4.4, "end": 7.8, "text": "FrameForge / example.com/frameforge / Useful details / Ways to use this", "emphasis_words": ["FrameForge"], "emotion": "useful", "motion": "Resource-first Notion illustration and short example copy settle; hold for reading", "beats": [] },
+      { "id": "loop", "start": 7.8, "end": 9, "text": "Fictional example · Simulated UI", "emphasis_words": [], "emotion": "calm", "motion": "Small accents and travelling chip return; static story remains readable", "beats": [] }
+    ],
+    "customize": {
+      "story": "Original code graphics; fictional FrameForge copy from examples/brief.md; no real data, claims about speed, or citations.",
+      "motion_reuse": "Search catalog for retained link path, staggered rows, restrained crossfade. Reuse selected animation rules when a complete registry block would replace the specific collector output. Record selected primitives and concrete catalog gaps in README."
+    }
+  }
+}
