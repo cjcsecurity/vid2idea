@@ -159,7 +159,7 @@ def test_ack_failure_retries_without_republishing_content(tmp_path):
     box.close()
 
 
-def test_outage_retains_result_and_retry_after_without_media_attempts(tmp_path):
+def test_outage_retains_result_and_retry_after_without_media_attempts(tmp_path, codex_available):
     from datetime import datetime,timezone,timedelta
     from vid2idea.worker import Worker
     box,cloud,api=store(tmp_path); calls=[]
@@ -258,7 +258,7 @@ def test_cleanup_recovers_when_root_deletion_commits_then_times_out(tmp_path):
     box.close()
 
 
-def test_duplicate_during_unfinished_revision_coalesces_and_preserves_new_share(tmp_path):
+def test_duplicate_during_unfinished_revision_coalesces_and_preserves_new_share(tmp_path, codex_available):
     from datetime import datetime,timezone,timedelta
     from vid2idea.worker import Worker
     from vid2idea.models import RetryRequest

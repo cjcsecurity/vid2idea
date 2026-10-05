@@ -2,6 +2,9 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 from vid2idea.models import Evidence
+import pytest
+
+pytestmark = pytest.mark.usefixtures('codex_available')
 
 def test_codex_uses_schema_images_and_isolates_collector_secrets(monkeypatch,tmp_path):
     from vid2idea.codex import generate_with_codex

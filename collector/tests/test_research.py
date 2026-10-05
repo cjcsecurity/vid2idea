@@ -219,7 +219,7 @@ def test_nearly_expired_pipeline_skips_research_and_keeps_completed_brief(monkey
     assert 'time' in result['evidence_gaps'][0].lower()
 
 
-def test_codex_research_only_inherits_allowed_environment_and_enables_live_search(monkeypatch):
+def test_codex_research_only_inherits_allowed_environment_and_enables_live_search(monkeypatch, codex_available):
     from vid2idea.codex import run_codex
     from vid2idea.research import ResearchReport
     import subprocess

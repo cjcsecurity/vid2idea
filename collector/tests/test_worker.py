@@ -1,5 +1,8 @@
 from datetime import datetime, timedelta, timezone
 from vid2idea.models import SourceCapture, GeneratedBrief, Brief, Evidence, RetryRequest
+import pytest
+
+pytestmark = pytest.mark.usefixtures('codex_available')
 
 def make_capture():
     return SourceCapture(channel_id='123456789012345678',message_id='223456789012345678',original_url='https://example.com/a',canonical_url='https://example.com/a',shared_at=datetime.now(timezone.utc))
