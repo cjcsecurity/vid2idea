@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="420" viewBox="0 0 1000 420" role="img" aria-labelledby="title desc">
+  <title id="title">Original FrameForge example illustration</title>
+  <desc id="desc">A fictional folder of sample screenshot shapes connects to a formatted demo card. Original vector art, not a captured source image.</desc>
+  <rect width="1000" height="420" fill="#e6e9d7"/>
+  <path d="M0 336H1000M80 0V420M920 0V420" stroke="#ced5bd" stroke-width="2"/>
+  <rect x="137" y="128" width="217" height="203" rx="14" fill="#17252b"/>
+  <path d="M148 134V101a12 12 0 0 1 12-12h83l25 28h73a13 13 0 0 1 13 13v25" fill="#17252b"/>
+  <rect x="177" y="157" width="149" height="119" rx="7" fill="#f4f0e7"/>
+  <path d="M191 187H251M191 209H275M191 231H230" stroke="#b74331" stroke-width="9" stroke-linecap="round"/>
+  <rect x="160" y="182" width="137" height="115" rx="7" fill="#d4e897" stroke="#17252b" stroke-width="3"/>
+  <path d="M181 211h46v58h-46zM244 211h32v20h-32zM244 242h32v27h-32z" fill="#56655f"/>
+  <path d="M387 215H508M485 196l24 19-24 19" fill="none" stroke="#b74331" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="552" y="67" width="330" height="290" rx="11" fill="#f4f0e7" stroke="#17252b" stroke-width="3"/>
+  <rect x="575" y="90" width="284" height="166" rx="5" fill="#17252b"/>
+  <rect x="595" y="111" width="83" height="125" rx="3" fill="#d4e897"/>
+  <rect x="693" y="111" width="146" height="37" rx="3" fill="#b74331"/>
+  <rect x="693" y="163" width="65" height="73" rx="3" fill="#56655f"/>
+  <rect x="773" y="163" width="66" height="73" rx="3" fill="#e6e9d7"/>
+  <path d="M580 286h143M580 310h229M580 329h187" stroke="#56655f" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="858" cy="338" r="26" fill="#b74331"/>
+  <path d="m846 338 8 8 17-18" fill="none" stroke="#f4f0e7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="768" viewBox="0 0 480 768" role="img" aria-labelledby="title desc">
+  <title id="title">vid2idea: from a saved Discord link to a useful Notion brief</title>
+  <desc id="desc">A link is stored in a durable local queue. Audio, OCR and sampled frames supply evidence. Research and practical use cases become an illustrated Notion brief. This is a diagram of the workflow, not a live recording.</desc>
+  <rect width="480" height="768" rx="12" fill="#f4f0e7"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#17252b">
+    <text x="32" y="50" font-size="25" font-weight="700" letter-spacing="-1">vid2idea</text>
+    <text x="32" y="103" font-size="36" font-weight="700" letter-spacing="-1">From a saved link</text>
+    <text x="32" y="145" font-size="36" font-weight="700" letter-spacing="-1">to a useful brief.</text>
+    <rect x="32" y="183" width="416" height="130" rx="8" fill="#17252b"/>
+    <text x="53" y="225" font-size="28" font-weight="700" fill="#f4f0e7">01  Save in Discord</text>
+    <text x="53" y="262" font-size="23" fill="#d4e897">Video or article link</text>
+    <text x="53" y="292" font-size="21" fill="#f4f0e7">Retained in a local queue</text>
+    <path d="M240 323v23m-7-7 7 7 7-7" fill="none" stroke="#b74331" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="32" y="357" width="416" height="134" rx="8" fill="#17252b"/>
+    <text x="53" y="399" font-size="28" font-weight="700" fill="#f4f0e7">02  Gather evidence</text>
+    <text x="53" y="436" font-size="23" fill="#d4e897">Audio · OCR · frames</text>
+    <text x="53" y="466" font-size="21" fill="#f4f0e7">Follow-up source research</text>
+    <path d="M240 501v23m-7-7 7 7 7-7" fill="none" stroke="#b74331" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="32" y="535" width="416" height="161" rx="8" fill="#fffdf7" stroke="#17252b" stroke-width="2"/>
+    <rect x="53" y="555" width="64" height="4" fill="#b74331"/>
+    <text x="53" y="596" font-size="28" font-weight="700">03  Revisit in Notion</text>
+    <text x="53" y="632" font-size="23" fill="#56655f">Names, links and images</text>
+    <text x="53" y="664" font-size="23" fill="#56655f">Use cases and first steps</text>
+    <text x="32" y="741" font-size="21" fill="#56655f">Workflow illustration · v0.1.0 alpha</text>
+  </g>
+</svg>

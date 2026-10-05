@@ -1,0 +1,8 @@
+{
+  "duration": 9,
+  "assertions": [
+    { "kind": "appearsBy", "selector": ".headline", "bySec": 0 },
+    { "kind": "staysInFrame", "selector": ".brief" },
+    { "kind": "staysInFrame", "selector": ".signal" }
+  ]
+}
