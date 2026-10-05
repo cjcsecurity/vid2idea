@@ -16,7 +16,7 @@ Issues = "https://github.com/cjcsecurity/vid2idea/issues"
 
 [project.optional-dependencies]
 # faster-whisper 1.2.1 passes metadata_errors, removed by PyAV 19.
-media = ["yt-dlp[default]", "faster-whisper>=1.1,<2", "av>=11,<19", "rapidocr>=3.9.1,<4", "pillow>=11,<13", "scrapling[fetchers] @ git+https://github.com/D4Vinci/Scrapling@971d5edb9c01f000dd4befcd21742e9b22260dc7"]
+media = ["yt-dlp[default]", "faster-whisper>=1.1,<2", "av>=11,<20", "rapidocr>=3.9.1,<4", "pillow>=11,<13", "scrapling[fetchers] @ git+https://github.com/D4Vinci/Scrapling@971d5edb9c01f000dd4befcd21742e9b22260dc7"]
 
 [dependency-groups]
 dev = ["pytest>=8,<10", "pytest-asyncio>=0.25,<2"]
