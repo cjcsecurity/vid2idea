@@ -10,10 +10,15 @@ class SourceError(Exception):
 
 
 def canonicalize_url(url: str) -> str:
-    p = urlsplit(url)
+    if not isinstance(url, str) or len(url) > 8192 or any(ord(char) < 33 or ord(char) == 127 for char in url):
+        raise SourceError('unsafe_url')
+    try:
+        p = urlsplit(url)
+        host = (p.hostname or '').lower().encode('idna').decode()
+    except (ValueError, UnicodeError):
+        raise SourceError('unsafe_url') from None
     if p.scheme.lower() not in ('http', 'https') or not p.hostname or p.username or p.password:
         raise SourceError('unsafe_url')
-    host = p.hostname.lower().encode('idna').decode()
     try:
         port = p.port
     except ValueError:

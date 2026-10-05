@@ -1,10 +1,12 @@
 # Operations and recovery
 
-Run commands from `collector/` so `.env` and the relative `DATA_DIR` resolve consistently. Default data is `.collector-data/outbox.sqlite`. One process lock protects the queue; do not run another worker on the same database.
+Run commands from `collector/`, or supply `--env-file /path/to/collector/.env`. Relative `DATA_DIR` is anchored to the configuration file’s folder. Default data is `.collector-data/outbox.sqlite`. One process lock protects the queue; do not run another worker on the same database.
 
 | Command | Purpose |
 | --- | --- |
-| `vid2idea doctor --check-notion` | Check configuration, media prerequisites and Notion schema/access |
+| `vid2idea init` | Create a protected configuration template without overwriting |
+| `vid2idea notion-sources` | List accessible Notion data source names and IDs |
+| `vid2idea doctor --check-notion` | Check configuration, subscription login, media prerequisites and Notion schema/project access |
 | `vid2idea import-history` | Queue accessible history, retaining progress across failures |
 | `vid2idea run` | Listen for links, check history every five minutes, process jobs and poll refresh requests |
 | `vid2idea once` | Process one pending job without connecting to Discord; run only when the service is stopped |
@@ -42,8 +44,10 @@ To remove that exact task, use `Unregister-ScheduledTask -TaskName 'Vid2Idea Col
 
 | Symptom | First check |
 | --- | --- |
+| Private configuration error | Run `chmod 600 collector/.env` from the repository root; use your own regular file, not a symlink |
 | Missing configuration | Fill the required fields in `.env`; use the correct working directory |
 | `notion_schema_mismatch` | Match every property type/option and the Projects relation in setup.md |
+| `notion_project_mismatch` / `notion_project_unavailable` | Use an active project page in the configured Projects data source |
 | Notion authentication/access/missing error | Connection token, granted database/project access, and correct data source IDs |
 | Codex unavailable or subscription login required | `codex login status`, CLI 0.160.0 compatibility and subscription usage |
 | No new entries | Local `status`, awake computer, bot channel permissions and Message Content Intent |

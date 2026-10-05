@@ -1,8 +1,12 @@
 # vid2idea
 
-**Turn the links you save in Discord into illustrated, researched briefs in Notion.**
+[![Collector checks](https://github.com/cjcsecurity/vid2idea/actions/workflows/ci.yml/badge.svg)](https://github.com/cjcsecurity/vid2idea/actions/workflows/ci.yml)
+[![Security checks](https://github.com/cjcsecurity/vid2idea/actions/workflows/security.yml/badge.svg)](https://github.com/cjcsecurity/vid2idea/actions/workflows/security.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Drop a public video or article into an ideas channel. A collector on your computer identifies the featured projects and websites, explains what they do, suggests ways to use them, and publishes a brief into your own Notion Library. Audio transcription and frame OCR help catch names the creator only shows on screen.
+**Save a link in Discord. Revisit an illustrated, researched brief in Notion.**
+
+Interesting projects disappear into your saved links. vid2idea runs on your computer, watches an ideas channel, identifies the projects and websites featured in each source, and turns them into useful briefs in your private Notion Library. Transcription, frame OCR and vision help catch names a creator only shows on screen.
 
 ```mermaid
 flowchart LR
@@ -12,65 +16,73 @@ flowchart LR
   D --> E["Your Notion Library"]
 ```
 
-## What you get
+## Inside a brief
 
-- Featured resource names, grounded links, and individual summaries at the start of each brief.
-- Up to three source images, useful details, first steps, and general applications.
-- Optional suggestions informed by your local project READMEs and GitHub repositories.
-- Follow-up research with opened source links, checked dates, and unresolved questions kept visible.
-- History catch-up, duplicate detection, retryable jobs, and local article/image snapshots.
-- Notion favorites, personal notes, stages, topics, and project relations. Refreshes preserve these fields and content outside the collector's managed section.
+- Featured resource **names, links and individual summaries** first.
+- Up to three source images, useful details and suggested first steps.
+- General use cases, plus optional suggestions for your local and GitHub projects.
+- Follow-up answers with opened sources and checked dates.
+- Visible coverage gaps and questions that still need your input.
 
-See an [illustrative brief](examples/brief.md), the [architecture](docs/architecture.md), and the [comparison with related projects](docs/competition-2026-10-05.md). This is an early release of a working personal workflow. First-time setup requires a Discord bot and a Notion database schema.
+Notion keeps your favorites, personal notes, stages and project relations. Refreshing a brief preserves those fields and content outside the collector's managed section. History catch-up and a durable local queue keep a burst of links from getting lost.
 
-## Quick start
+[Read a sample brief](examples/brief.md) · [Setup guide](docs/setup.md) · [Operations and recovery](docs/operations.md)
 
-Supported and tested: **Linux or WSL2, Python 3.12, Node.js 24, FFmpeg/FFprobe, and Codex CLI 0.160.0**. Other Codex versions and macOS have not been verified. Native Windows is unsupported; use WSL2. Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and [FFmpeg](https://ffmpeg.org/download.html), and put both `ffmpeg` and `ffprobe` on your PATH.
+**v0.1.0 is an alpha for a personal channel.** Setup requires your own Discord bot and a Notion Library schema. No hosted website, Vercel or Supabase project is needed. Your computer must be awake to ingest links; saved Notion pages remain readable while it is off.
 
-1. Download or clone this source into a folder named `vid2idea`.
-2. Install the tested Codex CLI and sign in with ChatGPT:
+## Get started
 
-   ```bash
-   npm install -g @openai/codex@0.160.0
-   codex login
-   codex login status
-   ```
+Tested: **Linux/WSL2, Python 3.12, Node.js 24 and Codex CLI 0.160.0**. Native Windows and macOS are unsupported in this release. Install [uv](https://docs.astral.sh/uv/getting-started/installation/), Git, Node.js, and [FFmpeg](https://ffmpeg.org/download.html). Both `ffmpeg` and `ffprobe` must be on PATH. On Ubuntu, FFmpeg is available through `sudo apt install ffmpeg`.
 
-   The default provider uses your normal Codex login. Subscription access and usage limits apply; this is not unlimited AI. See [official Codex CLI documentation](https://developers.openai.com/codex/cli). Setting `AI_PROVIDER=openai` supports an OpenAI-compatible API for brief generation, but disables automatic follow-up research. Use `AI_PROVIDER=codex` for the complete generation and research workflow.
+### 1. Install and sign in
 
-3. From the repository root, install the locked Python dependencies:
+```bash
+git clone https://github.com/cjcsecurity/vid2idea.git
+cd vid2idea
+uv sync --directory collector --extra media --locked
+npm install -g @openai/codex@0.160.0
+codex login
+```
 
-   ```bash
-   uv sync --directory collector --extra media --locked
-   cp collector/.env.example collector/.env
-   chmod 600 collector/.env
-   ```
+Choose **ChatGPT authentication** for Codex. The default workflow uses your Codex subscription; its access and usage limits apply. It does not require a separately paid AI API. See [official Codex CLI documentation](https://developers.openai.com/codex/cli).
 
-4. Follow [Discord and Notion setup](docs/setup.md), then fill in `collector/.env`. All destination IDs in the example are blank: use your own workspace and channel. Keep tokens out of chat, issues, and commits.
-5. Start from the collector directory:
+### 2. Connect your channel and Library
 
-   ```bash
-   cd collector
-   uv run --locked --extra media vid2idea doctor --check-notion
-   uv run --locked --extra media vid2idea import-history
-   uv run --locked --extra media vid2idea run
-   ```
+```bash
+cd collector
+uv run --locked --extra media vid2idea init
+```
 
-Post one short public video or article. Check its Notion page, resource links, source images, coverage notes, and suggested uses. `status` shows the local queue without disturbing active jobs.
+This creates a private `.env` without overwriting an existing file. Follow the [Discord and Notion setup guide](docs/setup.md) and edit `.env` locally. Tokens and destination IDs are blank in the template. Never paste tokens into issues or commit them.
 
-## Optional personalization
+After saving your Notion token and granting access, `vid2idea notion-sources` lists the available data source IDs. Every command below can be prefixed with `uv run --locked --extra media`.
 
-Set `PROJECT_ROOTS` to colon-separated parent folders, `GITHUB_OWNER` to your GitHub account, and/or `BRIEF_CONTEXT` to interests. GitHub access uses the official `gh` CLI: run `gh auth login` first. The reader uses bounded README/package descriptions and repository metadata, not source trees or `.env` files. These summaries are sent to the configured AI provider. Leave these settings blank for general suggestions.
+### 3. Check, then collect
 
-## What to expect
+```bash
+uv run --locked --extra media vid2idea doctor --check-notion
+uv run --locked --extra media vid2idea run
+```
 
-Your computer needs to be awake for collection and processing. Notion remains readable while it is off; the collector catches up from Discord history when it returns. [Autostart, refresh and recovery](docs/operations.md) explain unattended operation.
+Doctor checks configuration, subscription login, media prerequisites and the Notion destination. Post one short public video or article and inspect its Notion page. For an existing channel, the collector automatically catches up from accessible history; use a dedicated channel if you do not want old links processed. `import-history` can queue history without starting a worker.
 
-Public TikTok, Instagram and YouTube access varies by platform and source. The collector does not log into social accounts or import browser cookies. Private, removed, unsupported or restricted sources can produce blocked or partial entries rather than complete briefs. Articles that require browser rendering may also be unavailable.
+`status` safely shows the queue while the collector runs. [Set up autostart](docs/operations.md) after verifying a foreground run. If you run commands from another folder, pass `--env-file /path/to/collector/.env`; relative `DATA_DIR` is based on that file's folder. `.env` must be owned by you with mode `600`.
 
-Videos are limited to 10 minutes and 200 MiB. OCR samples up to 90 frames; vision receives up to 12 frames. A source may show something between sampled frames. Local transcription defaults to the Whisper `small` model on CPU; the first use downloads it. `WHISPER_MODEL=tiny` reduces resource needs. A job has a 15-minute deadline, including a bounded research pass. AI-generated suggestions and research still need judgment; coverage and unresolved questions are shown explicitly.
+## Personalize it, optionally
 
-## Development
+Set `PROJECT_ROOTS` to colon-separated parent folders, `GITHUB_OWNER` to your GitHub account, and/or `BRIEF_CONTEXT` to interests. GitHub discovery uses the official `gh` CLI: run `gh auth login` first. The reader uses bounded README/package descriptions and repository metadata. These summaries are sent to the configured AI provider. Leave the settings blank for general use cases.
+
+Set `AI_PROVIDER=openai` to use an OpenAI-compatible API for brief generation. This mode requires an endpoint/model and **disables automatic follow-up research**; API charges may apply. Use `AI_PROVIDER=codex` for the complete workflow.
+
+## Limits and expectations
+
+Public TikTok, Instagram and YouTube access varies by source and platform. Private, removed or restricted links can produce blocked or partial entries. The collector does not import browser cookies or log into social accounts. Articles that require browser rendering may be unavailable.
+
+Videos are limited to 10 minutes and 200 MiB, with self-contained MP4/MOV/WebM processing. OCR samples up to 90 frames; vision receives up to 12. Details between frames may be missed. Local transcription defaults to Whisper `small` on CPU; its first use downloads a model. `WHISPER_MODEL=tiny` reduces resource needs. A job has a 15-minute deadline, including bounded research. Notion plan limits and AI usage limits still apply.
+
+Generated suggestions need judgment. Coverage notes and unresolved questions remain visible. Treat links and source content as untrusted. See [security and privacy](SECURITY.md), [architecture](docs/architecture.md) and [related projects](docs/competition-2026-10-05.md).
+
+## Contribute
 
 ```bash
 uv sync --directory collector --extra media --locked
@@ -78,6 +90,6 @@ uv run --directory collector --extra media --locked pytest tests -q
 uv build --directory collector
 ```
 
-The regression suite uses synthetic data and mocked external services. Two legacy live Supabase checks are skipped by default; never enable them against a personal production service. Compatibility modules and their SDK remain for old-format migration, but the documented/default publishing backend is Notion. No Supabase or Vercel project is required.
+Tests use synthetic data and mocked services; real-media safety tests use temporary fixtures when FFmpeg is installed. Two legacy live Supabase checks are skipped by default. Compatibility modules remain for old-format migration; the default destination is Notion.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md). Project source is [MIT licensed](LICENSE); dependencies and source material retain their own licenses.
+See [CONTRIBUTING.md](CONTRIBUTING.md). Source is [MIT licensed](LICENSE); dependencies and ingested material retain their own licenses.

@@ -14,6 +14,7 @@ from .urls import SourceError
 from .videos import is_video_url, media_workspace, read_video
 from .media_assets import prepare_image_uploads
 from .research import research_questions
+from .environment import runtime_environment
 
 
 def process_capture(capture, settings):
@@ -28,8 +29,7 @@ def process_capture(capture, settings):
         config['supabase_secret_key'] = ''
         config['notion_api_token'] = ''
         payload = json.dumps({'capture':capture.model_dump(mode='json'),'settings':config,'workdir':str(workdir),'deadline':deadline})
-        collector_secrets={'DISCORD_TOKEN','SUPABASE_SECRET_KEY','NOTION_API_TOKEN','AI_API_KEY'}
-        environment = {**{key:value for key,value in os.environ.items() if key not in collector_secrets}, 'NO_PROXY':'', 'no_proxy':''}
+        environment = {**runtime_environment(), 'NO_PROXY':'', 'no_proxy':''}
         child = subprocess.Popen([sys.executable,'-m','vid2idea.pipeline'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,text=True,start_new_session=True,env=environment)
         try:
             stdout, _ = child.communicate(payload, timeout=max(0,deadline-time.monotonic()))

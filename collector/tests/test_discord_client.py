@@ -67,10 +67,10 @@ async def test_history_failure_is_visible_in_heartbeat(monkeypatch):
 
 def test_failed_history_import_returns_nonzero(monkeypatch, tmp_path):
     from vid2idea import cli
-    settings = Settings(discord_channel_id='123456789012345678', discord_token='test-token',  # Synthetic test values; gitleaks:allow
+    settings = Settings(publishing_backend='supabase', discord_channel_id='123456789012345678', discord_token='test-token',  # Synthetic test values; gitleaks:allow
         supabase_url='https://example.supabase.co', supabase_secret_key='test-secret',
         owner_id='00000000-0000-4000-8000-000000000001', data_dir=tmp_path)
-    monkeypatch.setattr(cli.Settings, 'from_env', lambda: settings)
+    monkeypatch.setattr(cli.Settings, 'from_env', lambda *args: settings)
     monkeypatch.setattr('vid2idea.cloud.CloudStore', lambda _: SimpleNamespace())
     monkeypatch.setattr('vid2idea.discord_client.IdeaClient',
         lambda *args, **kwargs: SimpleNamespace(run=lambda *args, **kwargs: None,

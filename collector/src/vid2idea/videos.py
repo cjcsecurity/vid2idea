@@ -34,6 +34,10 @@ def combine_evidence(captions, transcript, frames, gaps):
 
 
 def run_media(args, timeout=120):
+    # Downloaded files must be self-contained video containers. Playlist/image
+    # demuxers can dereference other files or URLs outside the source guard.
+    args = [args[0], '-protocol_whitelist', 'file,pipe', '-format_whitelist',
+            'mov,mp4,m4a,3gp,3g2,mj2,matroska,webm', *args[1:]]
     try:
         return subprocess.run(args, capture_output=True, check=True, timeout=timeout).stdout
     except (FileNotFoundError, subprocess.CalledProcessError, subprocess.TimeoutExpired):

@@ -11,6 +11,7 @@ from .project_context import load_project_context
 from .resources import finalize_generated
 from .models import GeneratedBrief, EvidenceKind
 from .urls import SourceError
+from .environment import runtime_environment
 
 
 def strict_schema(value):
@@ -31,8 +32,7 @@ def run_codex(prompt, output_model, settings, *, frames=(), search=False, timeou
     deadline=time.monotonic()+timeout
     if not shutil.which(settings.codex_command):
         raise SourceError('codex_not_installed',transient=True,retry_after=300)
-    allowed = ('PATH','HOME','CODEX_HOME','XDG_CONFIG_HOME','XDG_DATA_HOME','XDG_CACHE_HOME','LANG','LC_ALL','SSL_CERT_FILE','SSL_CERT_DIR')
-    environment = {key:os.environ[key] for key in allowed if key in os.environ}
+    environment = runtime_environment()
     try:
         login = subprocess.run([settings.codex_command,'login','status'],capture_output=True,text=True,timeout=min(15,timeout),env=environment)
         if login.returncode or 'logged in using chatgpt' not in (login.stdout + login.stderr).lower():

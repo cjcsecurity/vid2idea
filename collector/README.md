@@ -3,7 +3,8 @@
 Local Discord capture, multimedia evidence extraction, structured briefs,
 cited follow-up research, and durable Notion publishing.
 
-This package is configured from a local `.env` in its working directory.
+Run `vid2idea init` to create a protected `.env` in your working directory.
+Use `--env-file` to select an explicit file; relative data paths follow its folder.
 It requires Python 3.12 and a Linux/WSL environment. The full application
 also needs FFmpeg/FFprobe and a configured AI provider; default Codex
 operation was verified with CLI 0.160.0. Install the `media` extra for
@@ -17,3 +18,5 @@ alone and expecting it to provision Discord or Notion.
 
 The default publishing integration is Notion. Legacy Supabase migration
 compatibility remains in this release, but is not needed for normal operation.
+
+Full guide: https://github.com/cjcsecurity/vid2idea#readme

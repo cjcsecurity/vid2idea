@@ -27,8 +27,8 @@ SCHEMA = {'Name':'title','Origin':'select','Source URL':'url','Summary':'rich_te
 
 class NotionAPI:
     def __init__(self, settings, *, transport=None, interval=0.5):
-        self.data_source_id=str(UUID(settings.notion_library_data_source_id))
-        self.projects_id=str(UUID(settings.notion_projects_data_source_id))
+        self.data_source_id=str(UUID(settings.notion_library_data_source_id)) if settings.notion_library_data_source_id else ''
+        self.projects_id=str(UUID(settings.notion_projects_data_source_id)) if settings.notion_projects_data_source_id else ''
         self.client=httpx.Client(base_url='https://api.notion.com/v1', timeout=httpx.Timeout(30,connect=10),
             headers={'Authorization':'Bearer '+settings.notion_api_token.get_secret_value(),
                      'Notion-Version':'2026-03-11'},transport=transport,follow_redirects=False)
@@ -84,6 +84,8 @@ class NotionAPI:
         return self._bot_id
 
     def validate_schema(self):
+        if not self.data_source_id or not self.projects_id:
+            raise PublicationError('notion_invalid_configuration')
         schema=self.request('GET',f'/data_sources/{self.data_source_id}')
         props=schema.get('properties',{})
         if any(props.get(name,{}).get('type')!=kind for name,kind in SCHEMA.items()):
@@ -113,6 +115,15 @@ class NotionAPI:
                     break
                 cursor=data['next_cursor']
         return result
+
+    def validate_project(self, page_id):
+        page_id = str(UUID(page_id))
+        page = self.request('GET', f'/pages/{page_id}')
+        if page.get('archived') or page.get('in_trash'):
+            raise PublicationError('notion_project_unavailable')
+        parent = page.get('parent', {})
+        if parent.get('type') != 'data_source_id' or parent.get('data_source_id', '').replace('-', '') != self.projects_id.replace('-', ''):
+            raise PublicationError('notion_project_mismatch')
 
     def children(self, parent):
         result=[]; cursor=None

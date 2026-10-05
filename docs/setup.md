@@ -1,6 +1,6 @@
 # Discord and Notion setup
 
-Run the installation commands in the root README first. Keep configuration in `collector/.env`; all commands that load it should run from `collector/`. Do not publish your Notion workspace or create a new cloud application.
+Run the installation commands in the root README first. Create configuration with `vid2idea init` from `collector/`. Edit `collector/.env` locally; do not change its private permissions. Run commands there, or supply `--env-file /absolute/path/to/collector/.env`. The collector reads that exact file, does not search parent folders, and does not expand `${VARIABLE}` placeholders. Exported environment variables take precedence. Do not publish your Notion workspace or create a new cloud application.
 
 ## Discord
 
@@ -11,7 +11,7 @@ Run the installation commands in the root README first. Keep configuration in `c
 
 ## Notion connection and project
 
-Create an [internal Notion connection](https://developers.notion.com/guides/get-started/internal-connections) with read, insert and update content capabilities. Grant it access to **Library**, **Projects**, and the project page you use below. Save its token as `NOTION_API_TOKEN` locally. Connection access is sufficient; the databases can remain private.
+As a workspace owner, create an [internal Notion connection](https://developers.notion.com/guides/get-started/internal-connections) with read, insert and update content capabilities. In the connection’s **Content access → Edit access**, grant it access to **Library**, **Projects**, and the project page you use below. Alternatively use each Notion page’s **••• → Connections → Add connection**. Access to a parent includes its children. Save its token as `NOTION_API_TOKEN` locally. Connection access is sufficient; the databases can remain private.
 
 Create or reuse a **Projects** database/data source. Its title property can be `Name`; the publisher does not require a broader project-management schema. Add a project page such as **Saved ideas**. Save that page's ID as `NOTION_VID2IDEA_PROJECT_PAGE_ID`. Despite the variable name, it can be any page in your Projects data source. New entries initially relate to this page; you can change their project relations afterward.
 
@@ -49,33 +49,11 @@ Notion database IDs, data source IDs and page IDs are different. The collector r
 For page/database IDs, copy the item's link: the 32 hexadecimal characters near the end of its path are the ID; query parameters such as the view ID are not the page ID. For data source IDs, use Notion's data source controls if they expose the ID, or use the official [Search endpoint](https://developers.notion.com/reference/post-search) with the connection token. Search returns only content shared with the connection. The example below runs locally and prints data source titles and IDs, not the token:
 
 ```bash
-# Bash, from collector/. Do not enable shell tracing.
-read -rsp 'Notion connection token: ' notion_setup_token
-export notion_setup_token
-uv run --locked python - <<'PY'
-import os
-import httpx
-token = os.environ.pop('notion_setup_token')
-headers = {'Authorization': 'Bearer ' + token, 'Notion-Version': '2026-03-11'}
-with httpx.Client(headers=headers, timeout=30) as client:
-    cursor = None
-    while True:
-        body = {'filter': {'property': 'object', 'value': 'data_source'}, 'page_size': 100}
-        if cursor:
-            body['start_cursor'] = cursor
-        response = client.post('https://api.notion.com/v1/search', json=body)
-        if not response.is_success:
-            raise SystemExit(f'Notion search failed: HTTP {response.status_code}')
-        data = response.json()
-        for item in data['results']:
-            title = ''.join(part.get('plain_text', '') for part in item.get('title', []))
-            print(title, item['id'])
-        if not data.get('has_more'):
-            break
-        cursor = data['next_cursor']
-PY
-unset notion_setup_token
+# From collector/, after saving NOTION_API_TOKEN in the private .env:
+uv run --locked --extra media vid2idea notion-sources
 ```
+
+This read-only command prints source names and IDs, never your token. If it returns an empty list, grant access to the actual database pages and try again. It does not create or change your databases.
 
 Match the actual Library and Projects sources, especially if there are duplicate names or multiple sources in a database. The Library Projects relation must point to the same source you configure. See [Notion data source retrieval](https://developers.notion.com/reference/retrieve-a-data-source).
 
@@ -89,6 +67,6 @@ uv run --locked --extra media vid2idea import-history
 uv run --locked --extra media vid2idea run
 ```
 
-Doctor must report no missing configuration and a verified Notion connection. It checks media prerequisites and Notion access/schema; it does not prove every platform can download or that Codex has remaining usage. Confirm `codex login status` separately. Post a short public source, then inspect the full Notion page before enabling autostart.
+Doctor must report no missing configuration and a verified Notion connection. It checks media prerequisites, Codex subscription login, and Notion access/schema/project membership. It does not prove every platform can download or that Codex has remaining usage. Post a short public source, then inspect the full Notion page before enabling autostart.
 
 Useful Library views: recent entries sorted by Saved at; Favorites; unread briefs; and Partial/Blocked/Failed items for review. Check **Refresh article** to request regeneration/research. See [operations](operations.md) before changing or restoring local state.

@@ -1,0 +1,36 @@
+name: Security checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 8 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      - name: Audit locked runtime and media dependencies
+        run: |
+          uv export --directory collector --extra media --locked --no-dev --no-emit-project --no-hashes --output-file "$RUNNER_TEMP/requirements.txt" --quiet
+          uvx --from pip-audit==2.10.0 pip-audit --no-deps --disable-pip -r "$RUNNER_TEMP/requirements.txt"
+
+  static-analysis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      - name: Scan source and automation
+        run: uvx --python 3.13 --from semgrep==1.179.0 semgrep scan --config p/python --config p/security-audit --metrics off --disable-version-check --error collector/src .github

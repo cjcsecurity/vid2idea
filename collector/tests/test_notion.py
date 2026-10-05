@@ -114,7 +114,8 @@ def test_notion_configuration_has_no_supabase_dependency():
 
 def test_pipeline_strips_collector_secrets_from_media_environment(monkeypatch,tmp_path):
     from vid2idea import pipeline
-    for key in ('DISCORD_TOKEN','SUPABASE_SECRET_KEY','NOTION_API_TOKEN'):
+    secrets = ('DISCORD_TOKEN','SUPABASE_SECRET_KEY','NOTION_API_TOKEN','GH_TOKEN','AWS_SECRET_ACCESS_KEY','UNRELATED_CREDENTIAL')
+    for key in secrets:
         monkeypatch.setenv(key,'secret-canary')
     observed={}
     class Child:
@@ -124,6 +125,6 @@ def test_pipeline_strips_collector_secrets_from_media_environment(monkeypatch,tm
     def popen(*args,**kwargs): observed.update(kwargs); return Child()
     monkeypatch.setattr(pipeline.subprocess,'Popen',popen)
     pipeline.process_capture(capture(),settings(data_dir=tmp_path))
-    exposed=set(observed['env']) & {'DISCORD_TOKEN','SUPABASE_SECRET_KEY','NOTION_API_TOKEN'}
+    exposed=set(observed['env']) & set(secrets)
     assert exposed==set()
     assert observed['input']['settings']['notion_api_token']==''

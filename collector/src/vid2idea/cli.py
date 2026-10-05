@@ -3,10 +3,12 @@ import importlib.util
 import json
 import logging
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 from filelock import FileLock, Timeout
-from .config import Settings
+from .config import ConfigurationError, Settings
+from .environment import runtime_environment
 
 
 def doctor(settings,check_notion=False):
@@ -17,13 +19,23 @@ def doctor(settings,check_notion=False):
         'yt_dlp':importlib.util.find_spec('yt_dlp') is not None,
         'faster_whisper':importlib.util.find_spec('faster_whisper') is not None}
     checks['publishing_backend']=settings.publishing_backend
+    checks['supported_platform'] = sys.platform.startswith('linux')
+    checks['rapidocr'] = importlib.util.find_spec('rapidocr') is not None
+    if settings.ai_provider == 'codex':
+        try:
+            login = subprocess.run([settings.codex_command, 'login', 'status'], capture_output=True, text=True, timeout=15, env=runtime_environment())
+            checks['codex_login'] = 'verified' if login.returncode == 0 and 'logged in using chatgpt' in (login.stdout + login.stderr).lower() else 'codex_subscription_login_required'
+        except (OSError, subprocess.TimeoutExpired):
+            checks['codex_login'] = 'codex_unavailable'
+        if checks['codex_login'] != 'verified':
+            missing.append('CODEX_LOGIN')
     if check_notion:
         from .notion_api import NotionAPI,PublicationError
         try:
             api=NotionAPI(settings)
             try:
                 api.validate_schema()
-                api.request('GET',f'/pages/{settings.notion_vid2idea_project_page_id}')
+                api.validate_project(settings.notion_vid2idea_project_page_id)
                 api.bot_id
                 checks['notion_connection']='verified'
             finally:
@@ -31,26 +43,61 @@ def doctor(settings,check_notion=False):
         except (PublicationError,ValueError) as error:
             checks['notion_connection']=getattr(error,'code','notion_invalid_configuration')
             missing.append('NOTION_CONNECTION')
-    print(json.dumps(checks,indent=2))
-    return 0 if not missing and all(checks[k] for k in ('ai_configured','ffmpeg','ffprobe','scrapling','yt_dlp','faster_whisper')) else 1
+    checks['next_steps'] = []
+    if checks.get('codex_login') not in (None, 'verified'):
+        checks['next_steps'].append('Run codex login, choosing ChatGPT authentication.')
+    if missing:
+        checks['next_steps'].append('Complete the local configuration using docs/setup.md.')
+    if not all(checks[k] for k in ('scrapling','yt_dlp','faster_whisper','rapidocr')):
+        checks['next_steps'].append('Install media dependencies: uv sync --extra media --locked.')
+    if not checks['ffmpeg'] or not checks['ffprobe']:
+        checks['next_steps'].append('Install FFmpeg and put ffmpeg and ffprobe on PATH.')
+    print(json.dumps(checks, indent=2))
+    return 0 if not missing and all(checks[k] for k in ('ai_configured','ffmpeg','ffprobe','scrapling','yt_dlp','faster_whisper','rapidocr','supported_platform')) else 1
 
 
-def main():
-    parser = argparse.ArgumentParser(description='Collect Discord links into your private idea library')
-    parser.add_argument('command', choices=['doctor','import-history','run','once','status','migration-export','migration-import'])
-    parser.add_argument('--check-notion',action='store_true')
-    parser.add_argument('--backup',type=Path)
-    parser.add_argument('--dry-run',action='store_true')
-    args = parser.parse_args()
+def main(argv=None):
+    parser = argparse.ArgumentParser(description='Turn Discord links into researched Notion briefs.', formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog='init            Create a private configuration template\nnotion-sources  List data source names and IDs shared with your connection\ndoctor          Check configuration, AI login and media tools\nimport-history  Queue links from Discord history\nrun             Watch Discord and process the queue\nonce            Process one queued job\nstatus          Read queue/publication status without changing jobs\nmigration-*     Import/export legacy backups\n\nStart here: vid2idea init, edit .env, then vid2idea doctor --check-notion.\nSetup: https://github.com/cjcsecurity/vid2idea/blob/main/docs/setup.md')
+    parser.add_argument('command', choices=['init','notion-sources','doctor','import-history','run','once','status','migration-export','migration-import'])
+    parser.add_argument('--version', action='version', version='vid2idea 0.1.0')
+    parser.add_argument('--env-file', type=Path, help='Explicit private configuration file; relative DATA_DIR is based on its folder (default: ./.env)')
+    parser.add_argument('--check-notion',action='store_true', help='Verify Notion schema, project membership and connection access during doctor')
+    parser.add_argument('--backup',type=Path, help='Legacy migration backup folder')
+    parser.add_argument('--dry-run',action='store_true', help='Inspect a legacy import without writing')
+    args = parser.parse_args(argv)
     # Third-party logs can contain URLs, bodies, and authentication responses.
     logging.getLogger().setLevel(logging.CRITICAL)
     try:
-        settings = Settings.from_env()
+        if args.command == 'init':
+            from .setup import initialize_config
+            path = args.env_file if args.env_file is not None else Path('.env')
+            initialize_config(path)
+            print('Created private configuration. Edit it locally, then run vid2idea doctor --check-notion.')
+            return 0
+        settings = Settings.from_env(args.env_file)
+    except ConfigurationError as error:
+        print(str(error), file=sys.stderr)
+        return 1
     except ValueError:
         print('Invalid configuration. Check the names and formats in .env.example.',file=sys.stderr)
         return 1
     if args.command == 'doctor':
         return doctor(settings,args.check_notion)
+    if args.command == 'notion-sources':
+        from .setup import discover_sources
+        from .notion_api import PublicationError
+        try:
+            print(json.dumps(discover_sources(settings), indent=2))
+            return 0
+        except ConfigurationError as error:
+            print(str(error), file=sys.stderr)
+        except (PublicationError, ValueError, KeyError, TypeError) as error:
+            print(json.dumps({'error_code': getattr(error, 'code', 'notion_invalid_configuration')}), file=sys.stderr)
+        return 1
+    if not sys.platform.startswith('linux') and args.command not in ('status',):
+        print('This release supports Linux and WSL2. Use WSL2 on Windows.', file=sys.stderr)
+        return 1
     if args.command in ('status','migration-export','migration-import'):
         from .migration import export_backup,import_backup,local_status
         from .notion_api import PublicationError

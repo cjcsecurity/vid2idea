@@ -1,28 +1,23 @@
-# Release preparation checks
+# v0.1.0 release verification
 
-Verified October 5, 2026 for version 0.1.0. This source bundle is prepared for review; no public repository, package index release or GitHub Actions run is claimed.
+Checks performed on 2026-10-05. This is an alpha; the evidence below describes specific checks rather than a general security guarantee.
 
-| Check | Result |
-| --- | --- |
-| Fresh Python 3.12 environment, `uv sync --extra media --locked` | Passed; shipped lockfile unchanged |
-| Full regression suite from the repository root | 112 passed, two opt-in legacy live checks skipped; seven upstream deprecation warnings |
-| `uv build --directory collector` | Wheel and source distribution built successfully |
-| Built package inventory | Wheel: 33 files; source distribution: 57 files; private runtime files excluded |
-| Fresh wheel installation in a separate environment | Console help and empty local status passed without configuration or service calls |
-| Setup schema comparison | All 18 required property names/types match the publisher; required select options and Projects destination documented |
-| Data source discovery example | Read-only Notion search returned HTTP 200 with expected data source object types |
-| CI definition | YAML parsed, pinned action commits resolved, local test/build/CLI steps passed |
-| Source/built-artifact secret scans | Official Gitleaks 8.30.1, download SHA-256 verified; no unsuppressed findings |
-| Separate privacy/inventory checks | Operational credential/ID markers and private data directories absent from source inventory and extracted built members |
-| Runtime comparison | All 28 runtime Python files byte-identical to the working collector |
-| Test-only changes | Operational fixture identifiers replaced with synthetic values; three synthetic fixture lines explicitly annotated for Gitleaks |
-| Independent review | No Critical/Important implementation findings; two factual documentation corrections applied and checked against primary evidence |
-| Existing installation | Same live service process, no restart; private local status showed no pending or publication errors |
+## Local checks
 
-The secret scanner initially matched synthetic Discord IDs in tests. Only those three verified fixture lines use standard `gitleaks:allow` annotations. No global scanner exemption was introduced. Separate privacy comparisons covered the complete release inventory. Secret scanning and marker checks do not constitute a complete security audit.
+- Locked `uv` installation on Linux/WSL2, Python 3.12.14.
+- 127 tests passed; two legacy live Supabase tests skipped. Seven upstream deprecation warnings remain.
+- Regression coverage for private env-file loading, environment precedence, no interpolation, no process environment mutation, non-overwriting setup, safe errors, Notion source discovery and project membership, and arbitrary-credential exclusion from processing children.
+- Real FFmpeg/FFprobe fixtures verify that an HLS playlist cannot read another local media file and that MP4 remains readable.
+- Gitleaks 8.30.1, Semgrep Community Edition 1.179.0, and pip-audit 2.10.0 are the selected security checks. Semgrep's initial scan ran 200 applicable rules over 31 source/automation files with no findings.
+- The initial dependency audit returned zero known advisories among 88 checked distributions. Scrapling's pinned Git revision is skipped by pip-audit and must be reviewed separately. The lock also contains platform-specific packages not installed in this environment.
+- Source and wheel builds completed. Release checks also require a fresh wheel configuration/CLI smoke test and scans of the final source and built distributions.
 
-## Limits
+## Publication gate
 
-GitHub-hosted CI has not run because no repository was published during preparation. A clean source installation and a wheel CLI smoke test were performed; the complete bot/Notion onboarding flow was not repeated in a second new workspace. The existing integration has live verification, but new users must verify their own permissions, schema, platform access and model usage.
+The candidate is undergoing independent review before public code publication. Repository publication, hosted CI and release asset verification will be recorded here after they complete. CI has minimum read permissions, immutable action pins, isolated secret scanning, static analysis, locked dependency auditing and weekly checks. Dependabot is configured for uv and GitHub Actions.
 
-Linux/WSL2 and Codex CLI 0.160.0 are the tested baseline. macOS, other Codex versions and deliberate Windows reboot/sign-in behavior are not verified here. Native Windows is unsupported. Compatibility modules remain for the old storage format; no hosted website or cloud database is required by the documented workflow.
+## Practical limits
+
+Offline fixtures do not prove every public source can be downloaded. A full first-time onboarding in a separate new Notion workspace has not been performed. Native Windows/macOS and a deliberate Windows reboot/sign-in are unverified. Public platform access, Notion plan limits and Codex subscription limits apply. The separately running personal installation was not changed by this release work.
+
+The public repository and artifacts are built from a dedicated sanitized checkout, not the operational collector's history or data directory. Source images and sample content use synthetic examples; credentials, saved articles and workspace/channel identifiers are excluded. Keep local state and backups private.

@@ -1,6 +1,12 @@
 import socket
 import pytest
 
+@pytest.mark.parametrize('url', ['https://[bad]/', 'https://example.com/\r\nInjected: value', 'https://example.com/with space', 'https://example.com/\x00'])
+def test_malformed_urls_fail_with_safe_error(url):
+    from vid2idea.urls import canonicalize_url, SourceError
+    with pytest.raises(SourceError, match='unsafe_url'):
+        canonicalize_url(url)
+
 def test_canonical_url_preserves_content_query():
     from vid2idea.urls import canonicalize_url
     assert canonicalize_url('https://EXAMPLE.com/watch?v=abc&utm_source=feed#top') == 'https://example.com/watch?v=abc'
