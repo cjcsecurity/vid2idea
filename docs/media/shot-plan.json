@@ -1,23 +1,61 @@
 {
-  "category": "kinetic-type",
-  "duration_s": 9,
-  "fps": 8,
-  "canvas": { "w": 960, "h": 540, "aspect": "16:9" },
-  "style": "Thoughtful editorial split frame: deep ink Discord/local process; warm paper native Notion blocks. A retained link chip travels from input to resource-first illustrated result. Silence, crisp type, clear fictional simulation labels.",
-  "palette": ["#17252b", "#f4f0e7", "#b74331", "#d4e897", "#56655f", "#d8d7cb"],
+  "category": "product-workflow",
+  "duration_s": 12,
+  "fps": 25,
+  "canvas": {
+    "w": 960,
+    "h": 540,
+    "aspect": "16:9"
+  },
+  "style": "One persistent Discord-to-Notion composition. Smooth bounded link transfer, ordered brief reveal, readable holds, no scene cuts or idle wobble.",
+  "palette": [
+    "#17252b",
+    "#f4f0e7",
+    "#b74331",
+    "#d4e897",
+    "#56655f",
+    "#d8d7cb"
+  ],
   "font": "Manrope",
   "export": "gif",
   "asset_needs": [],
   "content": {
-    "scenes": [
-      { "id": "save", "start": 0, "end": 2.2, "text": "Discord link → useful Notion brief", "emphasis_words": ["Notion brief"], "emotion": "curious", "motion": "Persistent split frame; Discord example message settles; link moves into durable queue", "beats": [] },
-      { "id": "understand", "start": 2.2, "end": 4.4, "text": "Audio · OCR · frames / Opened-source research", "emphasis_words": ["OCR"], "emotion": "clear", "motion": "Sequential process rows with persistent retained link", "beats": [] },
-      { "id": "revisit", "start": 4.4, "end": 7.8, "text": "FrameForge / example.com/frameforge / Useful details / Ways to use this", "emphasis_words": ["FrameForge"], "emotion": "useful", "motion": "Resource-first Notion illustration and short example copy settle; hold for reading", "beats": [] },
-      { "id": "loop", "start": 7.8, "end": 9, "text": "Fictional example · Simulated UI", "emphasis_words": [], "emotion": "calm", "motion": "Small accents and travelling chip return; static story remains readable", "beats": [] }
+    "beats": [
+      {
+        "id": "capture",
+        "start": 0,
+        "end": 2.8,
+        "motion": "Queue and evidence/research acknowledgments; frame and text anchors remain fixed."
+      },
+      {
+        "id": "handoff",
+        "start": 2.8,
+        "end": 4.05,
+        "motion": "One link token travels right and triggers the document reveal."
+      },
+      {
+        "id": "resource",
+        "start": 4.05,
+        "end": 6,
+        "motion": "Resource name/link/summary, image, details and saved state appear in order."
+      },
+      {
+        "id": "read",
+        "start": 6,
+        "end": 10.8,
+        "motion": "Intentional reading hold."
+      },
+      {
+        "id": "reset",
+        "start": 10.8,
+        "end": 12,
+        "motion": "Reset the document interior and acknowledgments; preserve the source and outer frame."
+      }
     ],
-    "customize": {
-      "story": "Original code graphics; fictional FrameForge copy from examples/brief.md; no real data, claims about speed, or citations.",
-      "motion_reuse": "Search catalog for retained link path, staggered rows, restrained crossfade. Reuse selected animation rules when a complete registry block would replace the specific collector output. Record selected primitives and concrete catalog gaps in README."
-    }
+    "film_extension": {
+      "duration_s": 22,
+      "motion": "At 9 seconds scroll the same document to first steps and an unresolved question; hold, then return to the resource heading at 17.5 seconds."
+    },
+    "disclosure": "Original artwork and fictional FrameForge content from examples/brief.md. Simulated views with time condensed."
   }
 }

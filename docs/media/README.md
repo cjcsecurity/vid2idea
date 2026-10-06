@@ -27,32 +27,30 @@ npx hyperframes check .build/loop --json
 npx hyperframes preview .build/demo --background
 ```
 
-`scripts/prepare.mjs` copies the two source HTML files, original SVG, local GSAP runtime, and two local WOFF2 fonts into independent self-contained `.build/demo/` and `.build/loop/` projects. Their render-time HTML makes no network requests. An optional `MEDIA_NODE_MODULES=/path/to/verified/node_modules` reuses an installation with the exact pinned package versions; an optional first script argument selects a temporary output directory. Build directories and dependency installs are ignored by Git.
+`scripts/prepare.mjs` builds both variants from `src/story.html` and copies the original SVG, local GSAP runtime, and two local WOFF2 fonts into independent self-contained `.build/demo/` and `.build/loop/` projects. Their render-time HTML makes no network requests. An optional `MEDIA_NODE_MODULES=/path/to/verified/node_modules` reuses an installation with the exact pinned package versions; an optional first script argument selects a temporary output directory. Build directories and dependency installs are ignored by Git.
 
 After reviewing the preview, render the loop and film:
 
 ```bash
-npx hyperframes render .build/loop --fps 8 --format gif --gif-loop 0 \
+npx hyperframes render .build/loop --fps 25 --format gif --gif-loop 0 \
   --quality delivery --workers 1 --strict --output ../assets/vid2idea-preview.gif
 npx hyperframes render .build/demo --fps 30 --quality delivery --workers 2 \
-  --strict --output .build/vid2idea-demo.raw.mp4
-ffmpeg -y -ss 11.5 -i .build/vid2idea-demo.raw.mp4 -frames:v 1 -q:v 3 \
+  --strict --output ../assets/vid2idea-demo.mp4
+ffmpeg -y -ss 6.5 -i ../assets/vid2idea-demo.mp4 -frames:v 1 -q:v 3 \
   ../assets/vid2idea-poster.jpg
-ffmpeg -y -i .build/vid2idea-demo.raw.mp4 -i ../assets/vid2idea-poster.jpg \
-  -filter_complex "[0:v][1:v]overlay=0:0:enable='eq(n,0)'[v]" -map '[v]' \
-  -c:v libx264 -crf 18 -preset slow -pix_fmt yuv420p -movflags +faststart \
-  ../assets/vid2idea-demo.mp4
 ```
 
-The settled 11.5-second brief frame is the poster and the MP4's first frame. The rest of the film retains its original timing. The GIF uses 8 fps to keep the full 960-pixel typography within the size target; only restrained accents move, and all story text stays visible. Its explicit paper background child also keeps the GIF opaque during the alpha capture path.
+The settled 6.5-second brief frame is the separate poster. The MP4 starts with its actual opening composition: no unrelated frame is inserted before playback. The GIF runs at 25 fps for 12 seconds, with exact 40ms frame delays. Both variants use the same persistent layout and timed link transfer; the film also scrolls the same document to show first steps and a question that remains unresolved. The loop resets its document interior during the last second while the source, framing and typography stay anchored. An explicit full-frame background keeps GIF frames opaque.
 
 Pinned dependencies are in `package.json` and `package-lock.json`: Hyperframes 0.8.106, GSAP 3.14.2, Manrope 5.3.0, JetBrains Mono 5.2.8. `npm audit` reported zero vulnerabilities on 2026-10-05.
 
 ## Verification
 
-The final browser gates report zero errors for runtime, layout, motion assertions, and WCAG contrast. The demo passed 77 text checks; the loop passed 130. Loop lint has no warnings. Demo lint retains five advisory findings: four recommend extracting inline scenes into sub-compositions, and one flags repeated placements of the same original SVG. These are deliberate, simple inline scenes and still images; proof snapshots verify every scene mounts and displays correctly.
+Run the browser gates for both variants and inspect the opening, link transfer, finished brief, scrolling document and final hold. The source uses one deterministic paused timeline and no scene cuts. There is no first-frame substitution or unrelated closing layout.
 
-Inspected proof times: demo 0, 2, 6.5, 11.5, 15.5, 20.5, and 22 seconds; loop 0, 5.8, and 9 seconds. Focused keyframe inspection confirms the bounded link signal's motion. The decoded GIF was also inspected at 830 pixels wide, matching desktop GitHub rendering. The mobile SVG was inspected separately at a 324-pixel content width. Proof images, logs, and temporary raw encodes are excluded from the repository.
+Verify the encoded GIF at the README's actual viewing width, including its 40ms frame delays, full opacity and continuous reset. Source PNG endpoints match exactly; GIF palette quantization changes 72 edge pixels, with no state or layout difference. Inspect the film's scroll at playback speed as well as in proof frames. The mobile SVG and reduced-motion poster remain readable static alternatives. Final measured checks are recorded in [verification.json](verification.json); temporary proofs, logs and build folders are excluded from the repository.
+
+Both variants pass runtime, layout, motion and contrast gates with zero errors (84 text checks in the loop; 103 in the film). A single lint advisory notes that the same original static SVG appears in the message and its brief. The scrolling document has intentional clipping; direct measurements confirm the settled resource view and follow-up text fit inside the document viewport.
 
 The MP4 has no audio stream. Both exports intentionally use silence; the choice and all licenses are recorded in [NOTICE.md](NOTICE.md). See [brag-plan.md](brag-plan.md), [composition-brief.md](composition-brief.md), and [shot-plan.json](shot-plan.json) for the creative contract. [share-copy.txt](share-copy.txt) is the short public caption.
 

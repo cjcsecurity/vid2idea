@@ -7,7 +7,7 @@ This is a silent, 22-second, 16:9 portfolio demo. It depicts a **simulated flow*
 1. **What is it?** A local collector that turns links saved in Discord into illustrated, researched briefs in a private Notion Library.
 2. **Strongest claim:** “Save a link in Discord. Revisit an illustrated, researched brief in Notion.” The impressive part is identifying a resource that is shown on screen, then putting that resource first in the brief.
 3. **Visual hook:** An ordinary Discord link becomes a warm, editorial Notion page. A retained link chip gives the transition a clear subject.
-4. **Actual output to show:** Native block order from `collector/src/vid2idea/notion_content.py`: resource heading, linked address, resource summary, Summary, source image with caption, Useful details, First steps, Ways to use this, Research, Still to figure out, Coverage notes. The simulated page follows this hierarchy, with selected sections visible at useful scale.
+4. **Actual output to show:** Native block order from `collector/src/vid2idea/notion_content.py`: resource heading, linked address, resource summary, Summary, source image with caption, Useful details, First steps, Ways to use this, Research, Still to figure out, Coverage notes. The simulated page condenses this output while keeping resource names, links and summary first; selected sections remain visible at useful scale.
 5. **Shortest satisfying video:** 22 seconds gives the entry, evidence pass, and resource-first result enough reading time.
 6. **Tone:** polished. Creative direction: a thoughtful editorial film about recovering useful ideas. Crisp typography, physical paper, calm purposeful motion, restrained coral and lime.
 7. **Audio:** intentional silence. README playback is muted by nature; silence carries across the longer demo. No narration, music, or SFX. Bundled music is excluded because public redistribution rights have not been established.
@@ -16,13 +16,13 @@ This is a silent, 22-second, 16:9 portfolio demo. It depicts a **simulated flow*
 
 ## Angle and identity
 
-**Hook:** “Saved links deserve a second look.” This is editorial framing, not a performance claim.
+**Hook:** “Keep the idea. Get the context.” The saved link and its destination share one frame from the start.
 
 **Centerpiece:** A simulated Discord message with a fictional FrameForge link transforms into an illustrated Notion brief. The middle explains how local evidence and separate opened-source research support that destination.
 
-**Outro:** “vid2idea / From saved link to useful brief.” Closing metadata says “Local collector · Discord → Notion · v0.1.0 alpha”.
+**Finish:** return to the resource heading in the same document. The original saved link stays visible; no independent closing scene.
 
-The repository has no product web UI or existing visual brand to preserve. The new media palette is ink `#17252b`, paper `#f4f0e7`, coral `#b74331`, lime `#d4e897`, muted ink `#56655f`, pale line `#d8d7cb`. Manrope is the main face; JetBrains Mono labels local processing and addresses. Type is sized for an 800–960px README rendition. No neon, glow, synthetic statistics, or resurrected dashboard.
+The repository has no product web UI. This revision preserves the established media palette: ink `#17252b`, paper `#f4f0e7`, coral `#b74331`, lime `#d4e897`, muted ink `#56655f`, pale line `#d8d7cb`. Manrope is the main face; JetBrains Mono labels local processing and addresses. Type is sized for an 800–960px README rendition. No neon, glow, synthetic statistics, or resurrected dashboard.
 
 ## Grounding
 
@@ -37,13 +37,15 @@ The repository has no product web UI or existing visual brand to preserve. The n
 
 ## Storyboard — 22 seconds
 
-1. **Second look — 0–4s.** Left: “Saved links deserve a second look.” Right: simulated Discord message in `#ideas`, fictional FrameForge `example.com/frameforge` link. A link chip settles into the local queue strip. Disclosure remains visible. The first sentence holds for approximately 3 seconds. Motion: quick entrance then calm hold; no audio.
-2. **Evidence, locally — 4–9s.** The chip anchors a compact process view: “Durable local queue”, then “Audio”, “On-screen text”, “Sampled frames”. A small original frame illustration visibly contains FrameForge's name and reserved address. Last line: “Then: research with opened sources”. Sequential reveal, full set holds for about 3 seconds. Label “Sequence condensed” avoids a real-time claim. Clean paper/ink handoff; no audio.
-3. **The useful part — 9–18s.** Warm simulated Notion page occupies the frame. “FrameForge” and its address precede the short resource summary and original synthetic source illustration. A side rail emphasizes “Resource first”, “Illustrated context”, “Optional use cases”. After an initial hold, the page translates upward to reveal “Ways to use this” and “Research / Command-line batch mode? / Inconclusive in this example.” Captions say “Original sample illustration” and “Fictional example · Simulated Notion blocks”. No live citations or instant processing. Transition soft; no audio.
-4. **Keep the idea — 18–22s.** Result and original link sit together. “vid2idea / From saved link to useful brief.” Small metadata anchors the local alpha workflow. Long settled finish, paper retained; no fade to black. No audio.
+One persistent composition replaces independent scene entrances. The source, document chrome, headline and footer keep their positions throughout. Motion communicates a saved link becoming a useful brief, with space to read the result.
 
-**Audio summary:** silence throughout; motion timing serves reading, not beat synchronization.
+1. **Save and hand off — 0–4s.** The fictional Discord message is already visible. Queue acknowledgment and two evidence/research indicators complete in order. A link token travels right into the existing document frame with a smooth ease; it does not reverse or wobble.
+2. **Reveal the resource — 4–9s.** The empty-state explanation gives way to the resource name, address and summary. Its original illustration and useful details follow. The finished resource view holds for reading.
+3. **Read the next steps — 9–18s.** The same document scrolls upward. A small first step and batch-export question remain visible for a long reading hold. “Still to verify” makes the fictional example's evidence limit explicit.
+4. **Keep the context — 18–22s.** The document returns to its heading and settles. The original message remains beside the resource-first brief.
+
+**Audio summary:** silence throughout; motion timing serves reading, not beat synchronization. The MP4 starts at the real opening frame. A separate 6.5-second result frame supplies the static poster.
 
 ## Short README loop
 
-9 seconds, 960×540 master, 8fps GIF. A fixed split composition makes every frame understandable: Discord/local process left, illustrated FrameForge Notion brief right. A link chip moves along a bounded connector; queue, evidence, and brief accents arrive in order. “Discord link → useful Notion brief” stays readable. At 7.8s, return gently to the initial state for an intentional loop. The original poster uses the fully settled result. All core story text remains present in the static fallback.
+12 seconds, 960×540, 25fps GIF. It uses the same composition and first six seconds of motion as the film, then holds the complete resource view. During the last second only the document interior and status indicators reset; the source and frame remain anchored. Source endpoint frames match; any encoded palette differences are measured separately from layout continuity. The mobile portrait SVG and reduced-motion poster remain static alternatives.

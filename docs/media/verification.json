@@ -1,5 +1,5 @@
 {
-  "verified_date": "2026-10-05",
+  "verified_date": "2026-10-06",
   "toolchain": {
     "hyperframes": "0.8.106",
     "gsap": "3.14.2",
@@ -8,8 +8,8 @@
   },
   "assets": {
     "vid2idea-demo.mp4": {
-      "bytes": 1649864,
-      "sha256": "5275c1f4f8c622e7c1b53754c5543be4a3f61e21acf0b1ea25821fe7bbfe50c2",
+      "bytes": 1895232,
+      "sha256": "8b0ed03e90022199e33acd2264adda97ec523edd107bdce75de8ba062cf7417e",
       "width": 1600,
       "height": 900,
       "codec": "h264",
@@ -17,27 +17,33 @@
       "frames": 660,
       "audio_streams": 0,
       "fps": 30,
-      "poster_frame": 0,
-      "poster_source_time_seconds": 11.5
+      "poster_source_time_seconds": 6.5,
+      "first_frame_is_natural_opening": true
     },
     "vid2idea-preview.gif": {
-      "bytes": 197525,
-      "sha256": "9a8b2bccc9fa815925e5ae7408624884c0e5402cc6810396fc5b13d8faf5c7b7",
+      "bytes": 427895,
+      "sha256": "a6379da9e59b04ac365ba13c08eb45c78c7e16ccfc77d6fc6949ff6718e1bd23",
       "width": 960,
       "height": 540,
       "codec": "gif",
-      "duration_seconds": 9.01,
-      "frames": 72,
+      "duration_seconds": 12.0,
+      "frames": 300,
       "audio_streams": 0,
-      "authored_fps": 8,
+      "authored_fps": 25,
+      "frame_delays_ms": [
+        40
+      ],
       "infinite_loop": true,
-      "first_and_last_decoded_pixels_identical": true,
+      "source_endpoint_pixels_identical": true,
+      "first_and_last_decoded_pixels_identical": false,
+      "endpoint_changed_pixels": 72,
+      "endpoint_max_channel_delta": 28,
       "decoded_alpha_min": 255,
       "decoded_alpha_max": 255
     },
     "vid2idea-poster.jpg": {
-      "bytes": 122848,
-      "sha256": "8a164a9b0dc275ce3a34a8910e0d416396ff5806d8b74c0ad2dd71a900d69830",
+      "bytes": 123106,
+      "sha256": "abd7221177f719deee20dd5bd5e4848b4ebcbc67947fd65787c233c759167fe1",
       "width": 1600,
       "height": 900,
       "codec": "mjpeg"
@@ -47,7 +53,7 @@
     "demo": {
       "lint": {
         "errors": 0,
-        "warnings": 5
+        "warnings": 1
       },
       "runtime": {
         "errors": 0,
@@ -64,14 +70,15 @@
       "contrast": {
         "errors": 0,
         "warnings": 0,
-        "checked": 77
+        "checked": 103,
+        "passed": 103
       },
       "ok": true
     },
     "loop": {
       "lint": {
         "errors": 0,
-        "warnings": 0
+        "warnings": 1
       },
       "runtime": {
         "errors": 0,
@@ -88,17 +95,20 @@
       "contrast": {
         "errors": 0,
         "warnings": 0,
-        "checked": 130
+        "checked": 84,
+        "passed": 84
       },
       "ok": true
     }
   },
-  "npm_audit_vulnerabilities": 0,
   "notes": [
-    "Fictional FrameForge and reserved example.com addresses; simulated UI.",
-    "Silent assets; no audio tracks.",
-    "GIF uses centisecond frame delays, yielding 9.01 seconds for the authored 9-second loop.",
-    "Explicit opaque paper child preserves warm background in alpha GIF capture.",
-    "Proof snapshots and logs are temporary and not shipped."
+    "Fictional FrameForge and reserved example.com addresses; simulated views and time condensed.",
+    "One persistent composition; no independent scene cuts or first-frame poster substitution.",
+    "Silent assets; no audio streams.",
+    "The 25fps GIF uses exact 40ms delays and a one-second interior reset. Source PNG endpoints match exactly; GIF palette quantization changes 72 edge pixels (0.014% of the frame, maximum channel delta 28).",
+    "The long document intentionally clips inside its viewport; settled top and follow-up views are inspected separately.",
+    "One lint advisory per variant: the same original static SVG appears in the source and its brief.",
+    "The existing palette, fonts and static mobile fallback are preserved.",
+    "Temporary proof frames and logs are excluded from the repository."
   ]
 }
