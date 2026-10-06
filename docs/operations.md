@@ -5,6 +5,8 @@ Run commands from `collector/`, or supply `--env-file /path/to/collector/.env`. 
 | Command | Purpose |
 | --- | --- |
 | `vid2idea init` | Create a protected configuration template without overwriting |
+| `vid2idea auth` | Sign in to the selected CLI provider; Gemini uses a collector-specific profile |
+| `vid2idea doctor --check-ai` | Use quota for one synthetic generation check without publication |
 | `vid2idea notion-sources` | List accessible Notion data source names and IDs |
 | `vid2idea doctor --check-notion` | Check configuration, subscription login, media prerequisites and Notion schema/project access |
 | `vid2idea import-history` | Queue accessible history, retaining progress across failures |
@@ -16,7 +18,7 @@ Prefix these with `uv run --locked --extra media` when using the repository envi
 
 ## Linux user service
 
-Verify a foreground run first. The provided service assumes the checkout is `~/code/vid2idea`; adjust **WorkingDirectory**, **ExecStart** and **PATH** together if it lives elsewhere. Ensure PATH contains Codex, Node.js, FFmpeg and FFprobe. A path under `.collector-tools/bin` is an optional place for your own trusted binaries, not a shipped bundle.
+Verify a foreground run first. The provided service assumes the checkout is `~/code/vid2idea`; adjust **WorkingDirectory**, **ExecStart** and **PATH** together if it lives elsewhere. Ensure PATH contains your selected AI CLI, Node.js, FFmpeg and FFprobe. Use the same OS user and configuration as the verified foreground run. A path under `.collector-tools/bin` is an optional place for your own trusted binaries, not a shipped bundle.
 
 From the repository root:
 
@@ -50,8 +52,9 @@ To remove that exact task, use `Unregister-ScheduledTask -TaskName 'Vid2Idea Col
 | `notion_project_mismatch` / `notion_project_unavailable` | Use an active project page in the configured Projects data source |
 | Notion authentication/access/missing error | Connection token, granted database/project access, and correct data source IDs |
 | Codex unavailable or subscription login required | `codex login status`, CLI 0.160.0 compatibility and subscription usage |
+| `*_unsupported_version` / `*_login_required` | Follow [provider setup](providers.md); configuration failures retain queued jobs until fixed |
 | No new entries | Local `status`, awake computer, bot channel permissions and Message Content Intent |
-| Partial research | Read coverage notes; restore Codex/search availability and request Refresh article |
+| Partial research | Read coverage notes; restore your selected provider/search availability and request Refresh article |
 | Identity/ownership/create reconciliation error | Stop guessing; preserve SQLite and inspect the existing page and journal before recovery |
 
 ## Backups

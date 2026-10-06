@@ -50,9 +50,13 @@ class Settings(BaseModel):
     ai_api_key: SecretStr = SecretStr('')
     ai_model: str = ''
     ai_vision_model: str = ''
-    ai_provider: Literal['codex', 'openai'] = 'codex'
+    ai_provider: Literal['codex', 'claude', 'gemini', 'openai'] = 'codex'
     codex_command: str = 'codex'
     codex_model: str = ''
+    claude_command: str = 'claude'
+    claude_model: str = ''
+    gemini_command: str = 'gemini'
+    gemini_model: str = ''
     whisper_model: str = 'small'
     project_roots: str = ''
     github_owner: str = Field(default='', pattern=r'^[A-Za-z0-9-]*$')
@@ -79,7 +83,7 @@ class Settings(BaseModel):
 
     @property
     def ai_configured(self):
-        if self.ai_provider == 'codex':
+        if self.ai_provider in ('codex', 'claude', 'gemini'):
             import shutil
-            return bool(shutil.which(self.codex_command))
+            return bool(shutil.which(getattr(self, self.ai_provider + '_command')))
         return bool(self.ai_base_url and self.ai_model)

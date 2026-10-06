@@ -8,9 +8,9 @@ The collector is one local Python process with a durable SQLite outbox and one p
 | `outbox.py`, `worker.py` | Durable jobs, history cursor, retry/backoff, process lock and safe events |
 | `articles.py`, `videos.py`, `transcribe.py`, `ocr.py` | Extract article text or public video audio, on-screen text and sampled frames |
 | `media_assets.py` | Normalize bounded source images into metadata-free JPEGs |
-| `ai.py`, `codex.py`, `resources.py` | Structured generation and evidence-grounded resource identities |
+| `ai.py`, `codex.py`, `cli_agents.py`, `resources.py` | Structured generation and evidence-grounded resource identities |
 | `project_context.py` | Optional bounded project descriptions from local folders and GitHub |
-| `research.py` | Bounded Codex live-search pass, opened citations and unresolved answers |
+| `research.py` | Bounded selected-provider live-search pass, opened citations and unresolved answers |
 | `local_library.py` | Stable source identity, provenance, snapshots and publication journals |
 | `notion_api.py`, `notion_content.py`, `notion_store.py` | Validate schema, render native blocks, upload images and reconcile publication |
 | `safe_proxy.py`, `pipeline.py` | Bounded public-source network extraction in a disposable child process |
@@ -21,7 +21,7 @@ Normal publishing uses Notion. `cloud.py` and `migration.py` retain compatibilit
 
 Source analysis uses the ChatGPT-authenticated Codex CLI by default, with structured output and selected images. Its tools, user configuration and collector credentials are excluded. Research is a separate bounded pass with live web search; only citations from successful page-open events are retained. This establishes that a page was opened, not that every generated claim is correct.
 
-Set `AI_PROVIDER=openai` to generate briefs through an explicitly configured OpenAI-compatible endpoint. This mode disables automatic follow-up research, even if Codex is logged in. Use `AI_PROVIDER=codex` for generation plus research. Without a usable subscription login or remaining usage, the Codex workflow retains retryable jobs or a source brief with incomplete research. Pin the model through `CODEX_MODEL`; otherwise the CLI chooses its default.
+Set `AI_PROVIDER=openai` to generate briefs through an explicitly configured OpenAI-compatible endpoint. This mode disables automatic follow-up research, even if Codex is logged in. Use `codex`, `claude` or `gemini` for generation plus research; see the [provider matrix](providers.md) for experimental status and pinned CLI contracts. Without a usable subscription login or remaining usage, the Codex workflow retains retryable jobs or a source brief with incomplete research. Pin the model through `CODEX_MODEL`; otherwise the CLI chooses its default.
 
 ## Publication ownership
 

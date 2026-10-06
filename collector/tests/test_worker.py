@@ -90,6 +90,25 @@ def test_missing_ai_keeps_cloud_link_queued(tmp_path):
     assert len(cloud.ids) == 1
     assert box.pending_count() == 1
 
+@pytest.mark.parametrize('code', ['claude_subscription_login_required','gemini_login_required','gemini_unsupported_version','codex_subscription_login_required'])
+def test_provider_setup_failures_preserve_queue_until_fixed(tmp_path, code):
+    from vid2idea.outbox import Outbox
+    from vid2idea.worker import Worker
+    from vid2idea.config import Settings
+    from vid2idea.urls import SourceError
+    box, cloud = Outbox(tmp_path/'jobs.sqlite'), Cloud()
+    box.enqueue([make_capture()],make_capture().channel_id,make_capture().message_id)
+    def unavailable(*args):
+        raise SourceError(code, transient=True, retry_after=300)
+    worker = Worker(box,cloud,Settings(),processor=unavailable)
+    now = datetime.now(timezone.utc)
+    for attempt in range(7):
+        assert worker.run_once(now+timedelta(hours=attempt)) == 'rescheduled'
+    assert box.pending_count() == 1 and not cloud.uploads
+    worker.processor = result
+    assert worker.run_once(now+timedelta(hours=8)) == 'processed'
+    box.close()
+
 def test_prolonged_cloud_failure_does_not_replace_cached_brief(tmp_path):
     from vid2idea.outbox import Outbox
     from vid2idea.worker import Worker
