@@ -46,9 +46,11 @@ def run_media(args, timeout=120):
 
 def read_video(url, settings, workdir):
     import yt_dlp
+    from .instagram import InstagramSlidesIE, read_slides
     url = validate_public_url(url)
     if not is_video_url(url):
         raise SourceError('unsupported_video')
+    instagram_post = InstagramSlidesIE.suitable(url)
     class Quiet:
         def debug(self, *args): pass
         def warning(self, *args): pass
@@ -73,11 +75,18 @@ def read_video(url, settings, workdir):
             'match_filter': limit, 'max_filesize': settings.max_download_bytes,
             'progress_hooks': [progress], 'writesubtitles': True, 'writeautomaticsub': True,
             'subtitleslangs': ['en'], 'subtitlesformat': 'vtt', 'cachedir': False,
+            'ignore_no_formats_error': instagram_post,
             'enable_file_urls': False, 'js_runtimes': {}, 'remote_components': [],
         }
         try:
             with yt_dlp.YoutubeDL(options) as downloader:
-                info = downloader.extract_info(url, download=False)
+                if instagram_post:
+                    downloader.add_info_extractor(InstagramSlidesIE())
+                    info = downloader.extract_info(url, download=False, process=False)
+                    if info and (info.get('_vid2idea_image') or info.get('_type') == 'playlist'):
+                        return read_slides(info, url, settings, workdir, proxy, options)
+                else:
+                    info = downloader.extract_info(url, download=False)
                 if not info or info.get('_type') in ('playlist', 'multi_video'):
                     raise SourceError('unsupported_video')
                 if limit(info):
@@ -88,6 +97,10 @@ def read_video(url, settings, workdir):
             raise
         except Exception:
             raise proxy.error or SourceError('video_unavailable') from None
+    return read_video_file(path, info, settings, workdir, url)[0]
+
+
+def read_video_file(path, info, settings, workdir, url):
     if not path.is_file():
         raise SourceError('video_unavailable')
     if path.stat().st_size > settings.max_download_bytes:
@@ -100,7 +113,7 @@ def read_video(url, settings, workdir):
         lines = caption.read_text(errors='replace').splitlines()
         captions = '\n'.join(dict.fromkeys(re.sub(r'<[^>]+>', '', line).strip() for line in lines if line and not re.match(r'^(WEBVTT|Kind:|Language:|\d|NOTE|STYLE)', line)))[:48000]
         break
-    if not captions:
+    if not captions and info.get('acodec') != 'none':
         try:
             audio = workdir / 'audio.wav'
             run_media(['ffmpeg','-nostdin','-v','error','-y','-i',str(path),'-vn','-ar','16000','-ac','1',str(audio)])
@@ -128,4 +141,4 @@ def read_video(url, settings, workdir):
     description=info.get('description') or ''
     if description:
         evidence.text=(evidence.text+'\n\nCreator description:\n'+description[:1000])[:48000]
-    return evidence
+    return evidence, duration

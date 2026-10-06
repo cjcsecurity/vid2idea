@@ -30,6 +30,7 @@ class EvidenceKind(StrEnum):
     captions = 'captions'
     audio_transcript = 'audio_transcript'
     video_frames = 'video_frames'
+    image_slides = 'image_slides'
     on_screen_text = 'on_screen_text'
 
 

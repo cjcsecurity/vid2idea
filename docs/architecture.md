@@ -6,7 +6,7 @@ The collector is one local Python process with a durable SQLite outbox and one p
 | --- | --- |
 | `discord_client.py`, `capture.py`, `urls.py` | Read authorized channel history/events, extract links, validate and canonicalize URLs |
 | `outbox.py`, `worker.py` | Durable jobs, history cursor, retry/backoff, process lock and safe events |
-| `articles.py`, `videos.py`, `transcribe.py`, `ocr.py` | Extract article text or public video audio, on-screen text and sampled frames |
+| `articles.py`, `videos.py`, `instagram.py`, `transcribe.py`, `ocr.py` | Extract article text, Instagram photo/video slides, public video audio, on-screen text and sampled frames |
 | `media_assets.py` | Normalize bounded source images into metadata-free JPEGs |
 | `ai.py`, `codex.py`, `cli_agents.py`, `resources.py` | Structured generation and evidence-grounded resource identities |
 | `project_context.py` | Optional bounded project descriptions from local folders and GitHub |

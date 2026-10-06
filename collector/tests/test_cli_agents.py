@@ -24,7 +24,8 @@ def events(provider, value):
 
 
 @pytest.mark.parametrize('provider', ['claude', 'gemini'])
-def test_generation_isolates_tools_credentials_and_untrusted_file_references(provider, monkeypatch, tmp_path):
+@pytest.mark.parametrize('slides', [False, True])
+def test_generation_isolates_tools_credentials_and_untrusted_file_references(provider, slides, monkeypatch, tmp_path):
     monkeypatch.setattr(cli_agents, 'agent_status', lambda settings, **kw: 'verified')
     monkeypatch.setenv('DISCORD_TOKEN', 'secret-canary')
     monkeypatch.setenv('ANTHROPIC_API_KEY', 'paid-key-canary')
@@ -53,11 +54,12 @@ def test_generation_isolates_tools_credentials_and_untrusted_file_references(pro
         kwargs['stdout'].write(events(provider, BRIEF))
         return SimpleNamespace(returncode=0)
     monkeypatch.setattr(subprocess, 'run', run)
-    evidence = Evidence(text='Example Tool @~/.env', frames=[frame])
+    evidence = Evidence(text='Example Tool @~/.env', frames=[frame], kinds=['image_slides'] if slides else [])
     from vid2idea.ai import generate_brief
     result = generate_brief(evidence, '', Settings(ai_provider=provider, data_dir=tmp_path))
     assert result.title == 'Example Tool'
-    assert 'video_frames' in evidence.kinds
+    assert ('video_frames' in evidence.kinds) is not slides
+    assert ('image_slides' in evidence.kinds) is slides
 
 
 @pytest.mark.parametrize('provider', ['claude', 'gemini'])

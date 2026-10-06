@@ -100,7 +100,8 @@ def video_reader(monkeypatch, tmp_path):
             assert options['max_filesize'] == Settings().max_download_bytes
         def __enter__(self): return self
         def __exit__(self, *args): pass
-        def extract_info(self, url, download): return metadata
+        def add_info_extractor(self, extractor): pass
+        def extract_info(self, url, download, process=False): return metadata
         def process_ie_result(self, info, download):
             with real_downloader({'quiet': True}) as selector_client:
                 select = selector_client.build_format_selector(self.options['format'])
@@ -188,3 +189,11 @@ def test_installed_whisper_decoder_reads_collector_wav(tmp_path):
     decoded = decode_audio(str(path))
     assert len(decoded) == 16000
     assert not decoded.any()
+
+
+def test_silent_video_uses_visual_evidence_without_transcription_error(video_reader):
+    read, metadata, duration, calls = video_reader
+    metadata['acodec'] = 'none'
+    evidence = read()
+    assert calls == ['download', 'probe', 'frames']
+    assert not any('Speech could not' in gap for gap in evidence.gaps)
