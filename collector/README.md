@@ -7,7 +7,7 @@ Run `vid2idea init` to create a protected `.env` in your working directory.
 Use `--env-file` to select an explicit file; relative data paths follow its folder.
 It requires Python 3.12 and a Linux/WSL environment. The full application
 also needs FFmpeg/FFprobe and a configured AI provider; default Codex
-operation was verified with CLI 0.160.0. Install the `media` extra for
+operation was verified with CLI 0.160.0. Experimental Claude Code and Gemini CLI adapters are documented in docs/providers.md, with pinned versions and their verification limits. Install the `media` extra for
 article extraction, video downloads, transcription, OCR and source images.
 
 The source distribution includes tests and service examples. The repository

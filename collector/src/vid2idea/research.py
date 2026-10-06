@@ -164,13 +164,19 @@ def research_questions(generated, settings, evidence=None, *, deadline=None):
         if not payload['questions']:
             finalize_research(generated,{'results':[]},set(),checked_at,blocked)
             return []
-        if settings.ai_provider!='codex':
-            raise ValueError('Subscription research requires Codex')
+        if settings.ai_provider=='openai':
+            raise ValueError('Automatic research requires a supported CLI provider')
         budget=remaining()
         if budget<=0:
             raise TimeoutError('Research budget exhausted')
-        report,trace=run_codex(SYSTEM+'\n'+json.dumps(payload),ResearchReport,settings,search=True,timeout=budget)
-        opened=opened_sources(trace)
+        if settings.ai_provider=='codex':
+            report,trace=run_codex(SYSTEM+'\n'+json.dumps(payload),ResearchReport,settings,search=True,timeout=budget)
+            opened=opened_sources(trace)
+        else:
+            from .cli_agents import run_agent, opened_agent_sources
+            prompt=SYSTEM+'\nFetch each source separately. For web_fetch use its url parameter, one URL per call.\n'+json.dumps(payload)
+            report,trace=run_agent(prompt,ResearchReport,settings,search=True,timeout=budget)
+            opened=opened_agent_sources(trace,settings.ai_provider)
         finalize_research(generated,report,opened,checked_at,blocked)
         if not opened:
             return ['Question research could not verify any opened sources; the source brief is saved.']

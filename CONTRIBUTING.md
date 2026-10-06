@@ -1,6 +1,6 @@
 # Contributing
 
-Start with the README and architecture guide. Keep changes focused on turning saved links into useful, evidence-aware Notion briefs. Discuss large scope changes in an issue before building a new platform or destination.
+Start with the README, [shared agent instructions](AGENTS.md), and architecture guide. Codex, Claude Code and Gemini CLI can use the same commands; no client-specific plugin is required. Keep changes focused on turning saved links into useful, evidence-aware Notion briefs. Discuss large scope changes in an issue before building a new platform or destination.
 
 Use Python 3.12 and the locked environment:
 

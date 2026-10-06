@@ -65,6 +65,9 @@ def build_messages(evidence, note, settings, projects=None):
 
 
 def generate_brief(evidence, note, settings):
+    if settings.ai_provider in ('claude', 'gemini'):
+        from .cli_agents import generate_with_agent
+        return generate_with_agent(evidence,note,settings)
     if settings.ai_provider == 'codex':
         from .codex import generate_with_codex
         return generate_with_codex(evidence,note,settings)

@@ -11,9 +11,9 @@ from .config import ConfigurationError, Settings
 from .environment import runtime_environment
 
 
-def doctor(settings,check_notion=False):
+def doctor(settings,check_notion=False,check_ai=False):
     missing = settings.missing()
-    checks = {'missing_configuration':missing,'ai_configured':settings.ai_configured,'ai_provider':settings.ai_provider,'vision_configured':settings.ai_provider == 'codex' or bool(settings.ai_vision_model),
+    checks = {'missing_configuration':missing,'ai_configured':settings.ai_configured,'ai_provider':settings.ai_provider,'vision_configured':settings.ai_provider != 'openai' or bool(settings.ai_vision_model),
         'ffmpeg':bool(shutil.which('ffmpeg')),'ffprobe':bool(shutil.which('ffprobe')),
         'scrapling':importlib.util.find_spec('scrapling') is not None,
         'yt_dlp':importlib.util.find_spec('yt_dlp') is not None,
@@ -29,6 +29,21 @@ def doctor(settings,check_notion=False):
             checks['codex_login'] = 'codex_unavailable'
         if checks['codex_login'] != 'verified':
             missing.append('CODEX_LOGIN')
+    if settings.ai_provider in ('claude','gemini'):
+        from .cli_agents import agent_status
+        checks['agent_login']=agent_status(settings)
+        if checks['agent_login'] not in ('verified','login_unverified'):
+            missing.append('AGENT_LOGIN')
+    if check_ai:
+        from .ai import generate_brief
+        from .models import Evidence
+        try:
+            generate_brief(Evidence(text='Example Tool is a fictional bookmarking tool.',source_url='https://example.com'),'',
+                           settings.model_copy(update={'project_roots':'','github_owner':'','brief_context':''}))
+            checks['ai_generation']='verified'
+        except Exception as error:
+            checks['ai_generation']=getattr(error,'code','model_unavailable')
+            missing.append('AI_GENERATION')
     if check_notion:
         from .notion_api import NotionAPI,PublicationError
         try:
@@ -46,6 +61,12 @@ def doctor(settings,check_notion=False):
     checks['next_steps'] = []
     if checks.get('codex_login') not in (None, 'verified'):
         checks['next_steps'].append('Run codex login, choosing ChatGPT authentication.')
+    if checks.get('agent_login') == 'login_unverified' and checks.get('ai_generation') != 'verified':
+        checks['next_steps'].append('Run vid2idea auth for Google login, then doctor --check-ai to verify a real model call.')
+    elif checks.get('agent_login') not in (None,'verified','login_unverified'):
+        checks['next_steps'].append('Follow docs/providers.md for the supported CLI version and vid2idea auth.')
+    if not checks['ai_configured'] and settings.ai_provider=='openai':
+        checks['next_steps'].append('Set AI_BASE_URL and AI_MODEL; configure AI_API_KEY when your endpoint requires it.')
     if missing:
         checks['next_steps'].append('Complete the local configuration using docs/setup.md.')
     if not all(checks[k] for k in ('scrapling','yt_dlp','faster_whisper','rapidocr')):
@@ -58,11 +79,12 @@ def doctor(settings,check_notion=False):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description='Turn Discord links into researched Notion briefs.', formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog='init            Create a private configuration template\nnotion-sources  List data source names and IDs shared with your connection\ndoctor          Check configuration, AI login and media tools\nimport-history  Queue links from Discord history\nrun             Watch Discord and process the queue\nonce            Process one queued job\nstatus          Read queue/publication status without changing jobs\nmigration-*     Import/export legacy backups\n\nStart here: vid2idea init, edit .env, then vid2idea doctor --check-notion.\nSetup: https://github.com/cjcsecurity/vid2idea/blob/main/docs/setup.md')
-    parser.add_argument('command', choices=['init','notion-sources','doctor','import-history','run','once','status','migration-export','migration-import'])
+        epilog='init            Create a private configuration template\nauth            Sign in to the selected CLI provider\nnotion-sources  List data source names and IDs shared with your connection\ndoctor          Check configuration, AI login and media tools\nimport-history  Queue links from Discord history\nrun             Watch Discord and process the queue\nonce            Process one queued job\nstatus          Read queue/publication status without changing jobs\nmigration-*     Import/export legacy backups\n\nStart here: vid2idea init, edit .env, then vid2idea doctor --check-notion.\nSetup: https://github.com/cjcsecurity/vid2idea/blob/main/docs/setup.md')
+    parser.add_argument('command', choices=['init','auth','notion-sources','doctor','import-history','run','once','status','migration-export','migration-import'])
     parser.add_argument('--version', action='version', version='vid2idea 0.1.0')
     parser.add_argument('--env-file', type=Path, help='Explicit private configuration file; relative DATA_DIR is based on its folder (default: ./.env)')
     parser.add_argument('--check-notion',action='store_true', help='Verify Notion schema, project membership and connection access during doctor')
+    parser.add_argument('--check-ai',action='store_true', help='Make one synthetic brief to verify the selected AI provider (uses quota)')
     parser.add_argument('--backup',type=Path, help='Legacy migration backup folder')
     parser.add_argument('--dry-run',action='store_true', help='Inspect a legacy import without writing')
     args = parser.parse_args(argv)
@@ -73,7 +95,7 @@ def main(argv=None):
             from .setup import initialize_config
             path = args.env_file if args.env_file is not None else Path('.env')
             initialize_config(path)
-            print('Created private configuration. Edit it locally, then run vid2idea doctor --check-notion.')
+            print('Created private configuration. Edit it locally, choose your provider, then run vid2idea doctor --check-notion. Provider setup: docs/providers.md')
             return 0
         settings = Settings.from_env(args.env_file)
     except ConfigurationError as error:
@@ -83,7 +105,15 @@ def main(argv=None):
         print('Invalid configuration. Check the names and formats in .env.example.',file=sys.stderr)
         return 1
     if args.command == 'doctor':
-        return doctor(settings,args.check_notion)
+        return doctor(settings,args.check_notion,args.check_ai)
+    if args.command == 'auth':
+        from .cli_agents import login_agent
+        from .urls import SourceError
+        try:
+            return login_agent(settings)
+        except SourceError as error:
+            print(error.code,file=sys.stderr)
+            return 1
     if args.command == 'notion-sources':
         from .setup import discover_sources
         from .notion_api import PublicationError

@@ -22,7 +22,7 @@ vid2idea is an open-source collector that runs on your computer. Drop a video or
 
 *The demo uses fictional example content and simulated views. Processing is condensed for the walkthrough.*
 
-> **v0.1.0 alpha:** built for a personal ideas channel. Linux/WSL2 is supported; setup requires your own Discord bot and Notion databases. Your computer must be awake to ingest links. Finished briefs remain readable in Notion while it is off.
+> **Alpha:** built for a personal ideas channel. Linux/WSL2 is supported; setup requires your own Discord bot and Notion databases. Your computer must be awake to ingest links. Finished briefs remain readable in Notion while it is off.
 
 ## From “save this” to “try this”
 
@@ -45,13 +45,19 @@ Refreshing a brief preserves your notes, favorites, stages, review status and ed
 
 ## Get started
 
+Choose **manual setup** below, or open this repository in your coding assistant and use this prompt:
+
+> Read AGENTS.md, README.md and docs/setup.md. Help me install vid2idea, choose an AI provider, and configure my Discord channel and private Notion Library. Keep tokens out of chat, preserve existing configuration, and verify setup before starting ingestion.
+
+Codex, Claude Code and Gemini CLI share the same project instructions. Other terminal-capable assistants can read `AGENTS.md` directly. The coding assistant you use for setup can differ from the runtime AI provider.
+
 You will need:
 
 - **Linux or WSL2 and Python 3.12.** Native Windows and macOS are unsupported in this alpha.
 - [uv](https://docs.astral.sh/uv/getting-started/installation/), Git and Node.js. The release was tested with **Node.js 24 and Codex CLI 0.160.0**.
 - [FFmpeg](https://ffmpeg.org/download.html), with both `ffmpeg` and `ffprobe` on PATH. On Ubuntu: `sudo apt install ffmpeg`.
 - A Discord server where you can add a bot, and a Notion workspace where you can create an internal connection and the required databases.
-- Codex access through ChatGPT authentication for the default generation and research workflow.
+- One AI provider: Codex (default), Claude Code, Gemini CLI, or an OpenAI-compatible endpoint. See the [provider guide and verification matrix](docs/providers.md).
 
 ### 1. Install and sign in
 
@@ -63,7 +69,9 @@ npm install -g @openai/codex@0.160.0
 codex login
 ```
 
-Choose **ChatGPT authentication**. The default workflow uses your Codex subscription; its access and usage limits apply. No separate AI API key is required. See the [official Codex CLI documentation](https://developers.openai.com/codex/cli).
+The commands above use the default Codex provider. For Claude or Gemini, replace the Codex installation/login steps with the [provider guide](docs/providers.md).
+
+Choose **ChatGPT authentication** for Codex. The default workflow uses your Codex subscription; its access and usage limits apply. No separate AI API key is required. See the [official Codex CLI documentation](https://developers.openai.com/codex/cli).
 
 ### 2. Connect Discord and Notion
 
@@ -85,11 +93,11 @@ The command lists accessible source names and IDs without printing your token.
 ### 3. Check and collect
 
 ```bash
-uv run --locked --extra media vid2idea doctor --check-notion
+uv run --locked --extra media vid2idea doctor --check-ai --check-notion
 uv run --locked --extra media vid2idea run
 ```
 
-Doctor checks configuration, Codex login, media prerequisites and the Notion destination. Post one short public source and inspect the resulting page before [setting up autostart](docs/operations.md).
+Doctor checks configuration, the selected provider, media prerequisites and the Notion destination. `--check-ai` uses quota for one fictional brief and publishes nothing; it does not test research or video extraction. Post one short public source and inspect the resulting page before [setting up autostart](docs/operations.md).
 
 **Existing channel?** The collector automatically catches up from accessible history. Use a dedicated channel if you want to start with new ideas. Leave `DISCORD_AUTHOR_ID` empty for all non-bot posts, or set it to collect only one person's links.
 
@@ -135,9 +143,9 @@ Three design choices shape the implementation:
 
 **Will it catch everything shown on screen?** Videos are limited to 10 minutes and 200 MiB, using self-contained MP4/MOV/WebM processing. OCR samples up to 90 frames; vision receives up to 12. Briefly displayed details can be missed. Local transcription defaults to Whisper `small` on CPU and downloads a model on first use; `WHISPER_MODEL=tiny` reduces resource needs. Each job has a 15-minute deadline, including bounded research.
 
-**What does it cost to run?** There is no hosted website or cloud database to deploy. You supply your computer, Discord bot, Notion workspace and AI access. Codex usage and Notion plan limits apply. Local transcription and OCR use your computer's resources.
+**What does it cost to run?** There is no hosted website or cloud database to deploy. You supply your computer, Discord bot, Notion workspace and AI access. Your selected AI provider’s usage limits and Notion plan limits apply. Local transcription and OCR use your computer's resources.
 
-**Can I use an API instead of Codex?** Set `AI_PROVIDER=openai` and configure an OpenAI-compatible endpoint/model for brief generation. API charges may apply. This mode disables automatic follow-up research; use `AI_PROVIDER=codex` for generation plus research.
+**Can I use Claude, Gemini, or a local model?** Yes. Select `codex`, `claude`, `gemini`, or `openai` in `AI_PROVIDER`. CLI providers support generation and research; the API-compatible path supports brief generation only. Claude/Gemini adapters are experimental: their pinned CLI contracts and offline regressions are checked, but authenticated end-to-end validation is still needed. See [provider setup](docs/providers.md).
 
 **How much should I trust a brief?** Opened citations provide provenance, not a guarantee that every claim is correct. Review the source, coverage notes and unresolved questions before acting on a suggestion. This alpha is intended for a personal channel; see [security and privacy](SECURITY.md).
 

@@ -25,3 +25,14 @@ CI has minimum read permissions, immutable action pins, full-history and clean-s
 Offline fixtures do not prove every public source can be downloaded. A full first-time onboarding in a separate new Notion workspace has not been performed. Native Windows/macOS and a deliberate Windows reboot/sign-in are unverified. Public platform access, Notion plan limits and Codex subscription limits apply. The separately running personal installation was not changed by this release work.
 
 The public repository and artifacts are built from a dedicated sanitized checkout, not the operational collector's history or data directory. Source images and sample content use synthetic examples; credentials, saved articles and workspace/channel identifiers are excluded. Keep local state and backups private.
+
+
+## Provider and onboarding follow-up — 2026-10-06
+
+Current main development adds experimental Claude Code 2.1.290 and Gemini CLI 0.62.0 adapters. These changes are newer than the v0.1.0 downloadable release assets. Install the current repository checkout for them.
+
+Verified locally: 142 offline tests passed, two legacy live tests skipped; a fresh locked media environment installed successfully; source/wheel builds and Twine metadata checks passed. A separately installed wheel created private configuration, refused overwrite and reported an empty queue. The new synthetic `doctor --check-ai` passed through the existing ChatGPT-authenticated Codex login without reading operational configuration or publishing anything.
+
+Both alternative CLI versions were installed in an isolated validation directory. Their executable/help contracts and missing-login paths were checked; Gemini's real settings loader accepted the generated configuration. Source inspection confirmed its effective tool registry, MCP allowlist, explicit image handling, direct-fetch events and proxy routing. Regression checks cover secret exclusion, untrusted file-reference escaping, structured output, failed/uncorrelated citations, research-only web tools and queue preservation across setup failures. Independent review found no remaining merge blockers after fixes.
+
+No authenticated Claude or Gemini account was available for end-to-end inference; both adapters remain experimental and require users to run the provider check and verify one real source. A text generation check does not verify video input or research. Expired credentials and provider outages may exhaust normal transient retries; missing login files and unsupported pinned versions retain queued work. New-workspace Notion onboarding and deliberate reboot/sign-in remain unverified. The approved demo and separately running private collector were preserved.

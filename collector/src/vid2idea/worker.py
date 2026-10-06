@@ -58,7 +58,11 @@ class Worker:
                 # Keep retrying the same publication slowly while the cloud is down.
                 self.outbox.defer(job.id,code,now+timedelta(seconds=max(60,delay or 0)))
                 result = 'rescheduled'
-            elif code == 'ai_not_configured':
+            elif code == 'ai_not_configured' or code in (
+                'codex_not_installed','codex_subscription_login_required',
+                'claude_not_installed','claude_subscription_login_required','claude_unsupported_version',
+                'gemini_not_installed','gemini_unsupported_version','gemini_login_required',
+            ):
                 self.outbox.defer(job.id,code,now+timedelta(seconds=300))
                 result = 'rescheduled'
             elif transient and job.retry_count < 4:

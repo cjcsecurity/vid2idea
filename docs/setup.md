@@ -1,6 +1,6 @@
 # Discord and Notion setup
 
-Run the installation commands in the root README first. Create configuration with `vid2idea init` from `collector/`. Edit `collector/.env` locally; do not change its private permissions. Run commands there, or supply `--env-file /absolute/path/to/collector/.env`. The collector reads that exact file, does not search parent folders, and does not expand `${VARIABLE}` placeholders. Exported environment variables take precedence. Do not publish your Notion workspace or create a new cloud application.
+Run the installation commands in the root README first and choose your AI provider using [the provider guide](providers.md). Create configuration with `vid2idea init` from `collector/`. Edit `collector/.env` locally; do not change its private permissions. Run commands there, or supply `--env-file /absolute/path/to/collector/.env`. The collector reads that exact file, does not search parent folders, and does not expand `${VARIABLE}` placeholders. Exported environment variables take precedence. Do not publish your Notion workspace or create a new cloud application.
 
 ## Discord
 
@@ -67,6 +67,6 @@ uv run --locked --extra media vid2idea import-history
 uv run --locked --extra media vid2idea run
 ```
 
-Doctor must report no missing configuration and a verified Notion connection. It checks media prerequisites, Codex subscription login, and Notion access/schema/project membership. It does not prove every platform can download or that Codex has remaining usage. Post a short public source, then inspect the full Notion page before enabling autostart.
+Doctor must report no missing configuration and a verified Notion connection. It checks media prerequisites, the selected AI provider, and Notion access/schema/project membership. It does not prove every platform can download or that your AI account has remaining usage. Post a short public source, then inspect the full Notion page before enabling autostart.
 
 Useful Library views: recent entries sorted by Saved at; Favorites; unread briefs; and Partial/Blocked/Failed items for review. Check **Refresh article** to request regeneration/research. See [operations](operations.md) before changing or restoring local state.

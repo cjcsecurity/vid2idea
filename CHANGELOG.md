@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Experimental Claude Code and Gemini CLI generation/research adapters, with pinned contracts and isolated model tools. Authenticated end-to-end validation is still needed for both.
+- Provider login and synthetic generation checks; setup failures retain queued work.
+- Shared Codex/Claude/Gemini contributor instructions and clearer provider/onboarding documentation.
+- Polished README preview and full product demo.
+
 ## 0.1.0 — 2026-10-05 (alpha)
 
 First public release: a local Discord collector that publishes illustrated, researched resource briefs to a private Notion Library.
