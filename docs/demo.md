@@ -1,6 +1,6 @@
 # A saved link, revisited
 
-https://github.com/user-attachments/assets/7b3c13ea-6ca6-4fd3-ac91-13a37dffa3ea
+https://github.com/user-attachments/assets/4e662ab0-e706-444a-9fe5-1482d990c92b
 
 [Download the MP4](assets/vid2idea-demo.mp4) · [Static preview](assets/vid2idea-poster.jpg) · [Text sample](../examples/brief.md) · [Installation](../README.md#get-started)
 
