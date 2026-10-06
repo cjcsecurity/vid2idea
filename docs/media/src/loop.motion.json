@@ -1,8 +1,10 @@
 {
-  "duration": 9,
+  "duration": 12,
   "assertions": [
-    { "kind": "appearsBy", "selector": ".headline", "bySec": 0 },
-    { "kind": "staysInFrame", "selector": ".brief" },
-    { "kind": "staysInFrame", "selector": ".signal" }
+    { "kind": "appearsBy", "selector": ".tagline", "bySec": 0 },
+    { "kind": "appearsBy", "selector": ".resource", "bySec": 4.7 },
+    { "kind": "appearsBy", "selector": ".saved-state", "bySec": 6 },
+    { "kind": "staysInFrame", "selector": ".paper" },
+    { "kind": "staysInFrame", "selector": ".discord" }
   ]
 }

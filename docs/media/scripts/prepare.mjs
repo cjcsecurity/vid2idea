@@ -12,10 +12,19 @@ const assets = {
   'manrope.woff2': '@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2',
   'jetbrains-mono.woff2': '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2',
 };
+const template = await readFile(join(mediaRoot, 'src', 'story.html'), 'utf8');
 for (const project of ['demo', 'loop']) {
   const root = join(outputRoot, project);
   await mkdir(join(root, 'assets'), { recursive: true });
-  await copyFile(join(mediaRoot, 'src', `${project}.html`), join(root, 'index.html'));
+  const demo = project === 'demo';
+  const values = { ID: `vid2idea-${project}`, VARIANT: project, WIDTH: demo ? 1600 : 960,
+    HEIGHT: demo ? 900 : 540, SCALE: demo ? 1600 / 960 : 1,
+    DURATION: demo ? 22 : 12, FPS: demo ? 30 : 25 };
+  const html = template.replace(/__([A-Z]+)__/g, (_, key) => {
+    if (!(key in values)) throw new Error(`Unknown composition variable: ${key}`);
+    return String(values[key]);
+  });
+  await writeFile(join(root, 'index.html'), html);
   await copyFile(join(mediaRoot, 'src', `${project}.motion.json`), join(root, 'index.motion.json'));
   await copyFile(join(mediaRoot, 'src', 'frameforge.svg'), join(root, 'assets', 'frameforge.svg'));
   for (const [target, source] of Object.entries(assets)) {

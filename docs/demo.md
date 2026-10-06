@@ -10,10 +10,10 @@ This silent walkthrough uses **fictional FrameForge content and simulated Discor
 
 | Time | What the demo shows |
 | --- | --- |
-| 0–4 seconds | A link shared in an ideas channel is retained for processing. |
-| 4–9 seconds | The local queue feeds audio, on-screen text and sampled-frame analysis. Research is a separate pass that retains successfully opened sources. |
-| 9–18 seconds | A Notion brief leads with FrameForge's name, address and summary, followed by an illustration, useful details and optional use cases. Its batch-mode research question remains inconclusive in this example. |
-| 18–22 seconds | The original link and its brief stay connected, ready to revisit. |
+| 0–4 seconds | A saved Discord link is retained locally. Evidence and research steps lead into one continuous link handoff. |
+| 4–9 seconds | The same Notion page reveals FrameForge's name, address, summary, illustration and useful details. |
+| 9–18 seconds | The document scrolls to practical first steps and a batch-export question that remains unresolved in this fictional example. |
+| 18–22 seconds | The page returns to the resource heading and holds, with the original Discord link still beside it. |
 
 Actual sources may be partially accessible or blocked, and sampled frames can miss details. A completed brief keeps coverage notes and unresolved questions visible. Your computer must be awake to process a source; Notion remains the reading interface afterward.
 

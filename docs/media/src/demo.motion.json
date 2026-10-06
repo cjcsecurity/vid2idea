@@ -1,11 +1,11 @@
 {
   "duration": 22,
   "assertions": [
-    { "kind": "appearsBy", "selector": "#hook-clip .headline", "bySec": 0.8 },
-    { "kind": "appearsBy", "selector": ".paper", "bySec": 10.0 },
-    { "kind": "appearsBy", "selector": ".brief-lower", "bySec": 14.4 },
-    { "kind": "appearsBy", "selector": ".outro-wordmark", "bySec": 19.3 },
+    { "kind": "appearsBy", "selector": ".tagline", "bySec": 0 },
+    { "kind": "appearsBy", "selector": ".resource", "bySec": 4.7 },
+    { "kind": "appearsBy", "selector": ".saved-state", "bySec": 6 },
+    { "kind": "appearsBy", "selector": ".followup", "bySec": 11 },
     { "kind": "staysInFrame", "selector": ".paper" },
-    { "kind": "staysInFrame", "selector": ".input-panel" }
+    { "kind": "staysInFrame", "selector": ".discord" }
   ]
 }

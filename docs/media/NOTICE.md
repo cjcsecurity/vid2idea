@@ -6,9 +6,9 @@ The video, GIF, poster, fictional screen copy, and `src/frameforge.svg` were cre
 
 Copyright 2026 HeyGen, Inc. Licensed under Apache License 2.0; the complete license is in [hyperframes-APACHE-2.0.txt](licenses/hyperframes-APACHE-2.0.txt).
 
-The short-slide stagger in `src/demo.html` and `src/loop.html` adapts the Hyperframes `grid-card-assemble` component. The final wordmark settle/rule/label in `src/demo.html` adapts `titlecard-lockup`. Changes: original layout and copy, simplified static DOM, local assets, original palette, bespoke timing, no stock icon generation or variable-building machinery, and integration into one deterministic paused timeline. The unmodified catalog components are not shipped. Sources: [Hyperframes repository](https://github.com/heygen-com/hyperframes) and its [registry](https://github.com/heygen-com/hyperframes/tree/main/registry).
+The original media adapted Hyperframes `grid-card-assemble` and `titlecard-lockup` primitives. The revised `src/story.html` retains the explicit short-slide/opacity reveal technique and replaces the independent scenes with one persistent layout, bounded link travel and document scrolling. The wordmark animation and scene cuts were removed. Original layout, copy, palette, artwork and timing are specific to this project. Unmodified catalog components are not shipped. Sources: [Hyperframes repository](https://github.com/heygen-com/hyperframes) and its [registry](https://github.com/heygen-com/hyperframes/tree/main/registry).
 
-Hyperframes CLI 0.8.106 is a pinned development dependency. Local word-match catalog searches on 2026-10-05 covered staggered row reveals, path travel, and crossfades. The selected two primitives suit the restrained editorial style. Straight bounded link travel uses the reviewed GSAP transform mechanism; no extra motion-path runtime or stock app scene is needed.
+Hyperframes CLI 0.8.106 remains the pinned rendering dependency. The revision uses its reviewed animation/core guidance and the existing GSAP transform adapter; no extra animation runtime or stock app scene is required.
 
 ## Fonts
 
