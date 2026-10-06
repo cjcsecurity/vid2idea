@@ -7,14 +7,15 @@ from .models import EvidenceImage
 from .resources import observed_urls
 
 
-def select_frame_evidence(frames, readings):
+def select_frame_evidence(frames, readings, slide_numbers=None):
     selected=[]; images=[]; seen_urls=set(); seen_lines=set(); blocks=[]
     for path,seconds,text in readings:
         lines=[line.strip() for line in text.splitlines() if line.strip()]
-        unique=[line for line in lines if line.casefold() not in seen_lines]
+        unique=lines if slide_numbers is not None else [line for line in lines if line.casefold() not in seen_lines]
         seen_lines.update(line.casefold() for line in lines)
         if unique:
-            blocks.append(f'[{seconds:.1f}s] '+'\n'.join(unique))
+            label=f'Slide {slide_numbers[frames.index(path)]}' if slide_numbers is not None else f'{seconds:.1f}s'
+            blocks.append(f'[{label}] '+'\n'.join(unique))
         urls={urlsplit(url).hostname for url in observed_urls(text)}
         if any(url not in seen_urls for url in urls):
             if len(selected)<12 and path not in selected:
@@ -34,10 +35,16 @@ def select_frame_evidence(frames, readings):
                 reading=next((item for item in readings if item[0]==path),None)
                 seconds=reading[1] if reading else None
                 images.append(EvidenceImage(path=path,caption='Still from the source video',timestamp_seconds=seconds))
+    if slide_numbers is not None:
+        selected.sort(key=frames.index)
+        images.sort(key=lambda image: frames.index(image.path))
+        for image in images:
+            image.caption=f'Instagram slide {slide_numbers[frames.index(image.path)]}'
+            image.timestamp_seconds=None
     return selected,'\n\n'.join(blocks)[:24000],images
 
 
-def scan_frame_text(frames, interval):
+def scan_frame_text(frames, interval, *, slide_numbers=None):
     readings=[];gaps=[]
     try:
         from rapidocr import RapidOCR
@@ -55,5 +62,5 @@ def scan_frame_text(frames, interval):
                         readings.append((path,index*interval,text))
     except Exception:
         gaps.append('On-screen text could not be fully read.')
-    selected,text,images=select_frame_evidence(frames,readings)
+    selected,text,images=select_frame_evidence(frames,readings,slide_numbers)
     return selected,text,images,gaps

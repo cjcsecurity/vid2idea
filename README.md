@@ -141,7 +141,9 @@ Three design choices shape the implementation:
 
 **Can it read every video or article?** Public TikTok, Instagram and YouTube access varies. Private, removed or restricted links can produce blocked or partial entries. The collector does not import browser cookies or sign into social accounts. Articles that require browser rendering may be unavailable.
 
-**Will it catch everything shown on screen?** Videos are limited to 10 minutes and 200 MiB, using self-contained MP4/MOV/WebM processing. OCR samples up to 90 frames; vision receives up to 12. Briefly displayed details can be missed. Local transcription defaults to Whisper `small` on CPU and downloads a model on first use; `WHISPER_MODEL=tiny` reduces resource needs. Each job has a 15-minute deadline, including bounded research.
+**Can it read Instagram slideshows?** Yes: single-photo posts and carousels with up to 20 photo/video slides. It preserves slide order and the creator caption, reads photo text, and transcribes/samples video slides. Limits include 4 MiB and 16 million pixels per photo, 10 minutes of combined video, and the existing 200 MiB/15-minute job budget. Up to 12 images go to visual analysis and three distinct slides illustrate the article. Unreadable slides are marked as gaps. Use **Refresh article** in Notion to retry a previously blocked post.
+
+**Will it catch everything shown on screen?** Videos are limited to 10 minutes and 200 MiB, using self-contained MP4/MOV/WebM processing. OCR samples up to 90 frames per video; vision receives up to 12. Briefly displayed details can be missed. Local transcription defaults to Whisper `small` on CPU and downloads a model on first use; `WHISPER_MODEL=tiny` reduces resource needs. Each job has a 15-minute deadline, including bounded research.
 
 **What does it cost to run?** There is no hosted website or cloud database to deploy. You supply your computer, Discord bot, Notion workspace and AI access. Your selected AI provider’s usage limits and Notion plan limits apply. Local transcription and OCR use your computer's resources.
 

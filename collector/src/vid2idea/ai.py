@@ -88,6 +88,6 @@ def generate_brief(evidence, note, settings):
         raise SourceError('model_unavailable', transient=True) from None
     finally:
         client.close()
-    if visual:
+    if visual and EvidenceKind.image_slides not in evidence.kinds:
         evidence.kinds.append(EvidenceKind.video_frames)
     return finalize_generated(result,evidence,projects)

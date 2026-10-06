@@ -91,6 +91,6 @@ def generate_with_codex(evidence, note, settings):
     projects = load_project_context(settings)
     prompt = SYSTEM + '\nReturn the brief directly. Do not use tools or inspect files.\n' + json.dumps(evidence_payload(evidence,note,settings,projects))
     result, _ = run_codex(prompt, GeneratedBrief, settings, frames=evidence.frames)
-    if evidence.frames:
+    if evidence.frames and EvidenceKind.image_slides not in evidence.kinds:
         evidence.kinds.append(EvidenceKind.video_frames)
     return finalize_generated(result,evidence,projects)

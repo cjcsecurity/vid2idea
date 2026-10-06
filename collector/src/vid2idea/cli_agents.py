@@ -204,7 +204,7 @@ def generate_with_agent(evidence, note, settings):
     projects = load_project_context(settings)
     result, _ = run_agent(SYSTEM + '\n' + json.dumps(evidence_payload(evidence, note, settings, projects)),
                           GeneratedBrief, settings, frames=evidence.frames)
-    if evidence.frames:
+    if evidence.frames and EvidenceKind.image_slides not in evidence.kinds:
         evidence.kinds.append(EvidenceKind.video_frames)
     return finalize_generated(result, evidence, projects)
 
